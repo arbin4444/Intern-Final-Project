@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 } */
+
+.login-div{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* .login-flex{
+  background-color: aquamarine;
+  width : 40%;
+} */
+ .login-flex{
+  height: 24vh;
+ }
+ .login-subFlex{
+  width: 40%;
+  background-color: aqua;
+ }
+ /* .username-fieldText .css-1dnt4yt-euiFieldText{
+margin: 10px;
+ } */
+
+
