@@ -4,26 +4,34 @@ import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldTex
 import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/commonFieldPassword";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
 
-export const Login: React.FC = () => {
+export const SignUp: React.FC = () => {
   return (
-    <div className="login-div">
+    <div className="signUp-div">
       <EuiFlexGroup
-        className="login-flex"
+        className="signUp-flex"
         direction="column"
         alignItems="center"
       >
-        <EuiFlexGroup className="login-subFlex" direction="column">
-          <EuiFlexGroup justifyContent="center" alignItems="center">
-            <EuiFlexItem className="login-text" grow={false}>
-              <EuiText>LogIn</EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
+        <EuiFlexGroup className="signUp-subFlex" direction="column">
+            <EuiFlexGroup justifyContent="center">
+                <EuiFlexItem className="signup-text" grow={false}>
+                    <EuiText>SignUp!!</EuiText>
+                </EuiFlexItem>
+            </EuiFlexGroup>
           <EuiFlexGroup alignItems="center">
             <EuiFlexItem className="username-text" grow={false}>
               <EuiText>UserName</EuiText>
             </EuiFlexItem>
             <EuiFlexItem className="username-fieldText">
               <CommonFieldText placeholder="Enter Username" />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup alignItems="center">
+            <EuiFlexItem className="email-text" grow={false}>
+              <EuiText>Email</EuiText>
+            </EuiFlexItem>
+            <EuiFlexItem className="email-fieldText">
+              <CommonFieldText placeholder="Enter Your Email" />
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup gutterSize="xl" alignItems="center">
@@ -37,7 +45,7 @@ export const Login: React.FC = () => {
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
               <div>
-                <CommonButton fill={true} title="Login" />
+                <CommonButton fill={true} title="SignUp" />
               </div>
             </EuiFlexItem>
           </EuiFlexGroup>
