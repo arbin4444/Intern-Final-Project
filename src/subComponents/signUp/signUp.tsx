@@ -1,10 +1,61 @@
 import { EuiFlexGroup, EuiFlexItem, EuiText } from "@elastic/eui";
-import React from "react";
+import React, { useState } from "react";
 import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldText";
 import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/commonFieldPassword";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
+import { useAddDataMutation } from "../../service/signupService/signupService";
+import { Link } from "react-router-dom";
 
 export const SignUp: React.FC = () => {
+  const [userSignupName, setUserSignupName] = useState("");
+  const [userSignupEmail, setUserSignupEmail] = useState("");
+  const [userSignupPassword, setUserSignupPassword] = useState("");
+  const [postSignupData] = useAddDataMutation();
+
+  const handlePostUserData = async () => {
+  try {
+    const userData = {
+      username: userSignupName.trim(),
+      email: userSignupEmail.trim(),
+      password: userSignupPassword.trim(),
+    };
+
+    const response = await postSignupData(userData).unwrap();
+    console.log("this is post data", response);
+
+    setUserSignupName("");
+    setUserSignupEmail("");
+    setUserSignupPassword("");
+  } catch (err) {
+    console.error("Error during signup:", err);
+  }
+};
+
+
+  const handleUserNameChange = (e: {
+    preventDefault: () => void;
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    e.preventDefault();
+    setUserSignupName(e.target.value);
+  };
+
+  const handleUserEmailChange = (e: {
+    preventDefault: () => void;
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    e.preventDefault();
+    setUserSignupEmail(e.target.value);
+  };
+
+  const handleUserPasswordChange = (e: {
+    preventDefault: () => void;
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    e.preventDefault();
+    setUserSignupPassword(e.target.value);
+  };
+
   return (
     <div className="signUp-div">
       <EuiFlexGroup
@@ -13,17 +64,21 @@ export const SignUp: React.FC = () => {
         alignItems="center"
       >
         <EuiFlexGroup className="signUp-subFlex" direction="column">
-            <EuiFlexGroup justifyContent="center">
-                <EuiFlexItem className="signup-text" grow={false}>
-                    <EuiText>SignUp!!</EuiText>
-                </EuiFlexItem>
-            </EuiFlexGroup>
+          <EuiFlexGroup justifyContent="center">
+            <EuiFlexItem className="signup-text" grow={false}>
+              <EuiText>SignUp!!</EuiText>
+            </EuiFlexItem>
+          </EuiFlexGroup>
           <EuiFlexGroup alignItems="center">
             <EuiFlexItem className="username-text" grow={false}>
               <EuiText>UserName</EuiText>
             </EuiFlexItem>
             <EuiFlexItem className="username-fieldText">
-              <CommonFieldText placeholder="Enter Username" />
+              <CommonFieldText
+                value={userSignupName}
+                placeholder="Enter Username"
+                onChange={handleUserNameChange}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup alignItems="center">
@@ -31,7 +86,11 @@ export const SignUp: React.FC = () => {
               <EuiText>Email</EuiText>
             </EuiFlexItem>
             <EuiFlexItem className="email-fieldText">
-              <CommonFieldText placeholder="Enter Your Email" />
+              <CommonFieldText
+                value={userSignupEmail}
+                placeholder="Enter Your Email"
+                onChange={handleUserEmailChange}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup gutterSize="xl" alignItems="center">
@@ -39,13 +98,27 @@ export const SignUp: React.FC = () => {
               <EuiText>Password</EuiText>
             </EuiFlexItem>
             <EuiFlexItem className="password-field">
-              <CommonFieldPassword type="dual" placeholder="Password" />
+              <CommonFieldPassword
+                value={userSignupPassword}
+                type="dual"
+                placeholder="Password"
+                onChange={handleUserPasswordChange}
+              />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup justifyContent="center">
+            <EuiFlexItem grow={false}>
+              <EuiText><Link to="/login">or Do you have your account already?</Link></EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
               <div>
-                <CommonButton fill={true} title="SignUp" />
+                <CommonButton
+                  fill={true}
+                  title="SignUp"
+                  onClick={handlePostUserData}
+                />
               </div>
             </EuiFlexItem>
           </EuiFlexGroup>

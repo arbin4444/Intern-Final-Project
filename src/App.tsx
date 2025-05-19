@@ -3,13 +3,21 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Login } from "./subComponents/login/login";
 import { EuiProvider } from "@elastic/eui";
-import {SignUp} from "./subComponents/signUp/signUp"
-import {UsersDetail} from "./subComponents/user/usersDetail"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { SignUp } from "./subComponents/signUp/signUp";
+import { UsersDetail } from "./subComponents/user/usersDetail";
+
 function App() {
   return (
     <div className="App">
       <EuiProvider colorMode="light">
-        <UsersDetail/>
+        <Router>
+          <Routes>
+            <Route path="/" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/usersdetail" element={<UsersDetail />} />
+          </Routes>
+        </Router>
       </EuiProvider>
     </div>
   );
