@@ -37,13 +37,13 @@
   }
 } */
 
-.login-div{
+.login-div {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.signUp-div{
+.signUp-div {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -53,75 +53,74 @@
   background-color: aquamarine;
   width : 40%;
 } */
- .login-flex{
+.login-flex {
   height: 40vh;
- }
- .signUp-flex{
-  height : 44vh;
- }
- .login-subFlex{
+}
+.signUp-flex {
+  height: 44vh;
+}
+.login-subFlex {
   width: 36%;
   padding: 10px;
   border-radius: 8px !important;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
- }
- .signUp-subFlex{
-   width: 36%;
+}
+.signUp-subFlex {
+  width: 36%;
   padding: 10px;
   border-radius: 12px !important;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
- }
- /* .username-fieldText .css-1dnt4yt-euiFieldText{
+}
+/* .username-fieldText .css-1dnt4yt-euiFieldText{
 margin: 10px;
  } */
-.username-fieldText.css-9sbomz-euiFlexItem-grow-1{
-margin: 0 0 0 8px;
-
+.username-fieldText.css-9sbomz-euiFlexItem-grow-1 {
+  margin: 0 0 0 8px;
 }
-.email-fieldText.css-9sbomz-euiFlexItem-grow-1{
-  margin : 0 0 0 48px;
+.email-fieldText.css-9sbomz-euiFlexItem-grow-1 {
+  margin: 0 0 0 48px;
 }
-.login-text .css-1n6n1v5-euiText-m{
+.login-text .css-1n6n1v5-euiText-m {
   font-size: 26px;
   font-weight: 600;
 }
-.signup-text .css-1n6n1v5-euiText-m{
-   font-size: 26px;
+.signup-text .css-1n6n1v5-euiText-m {
+  font-size: 26px;
   font-weight: 600;
 }
-.username-text .css-1n6n1v5-euiText-m{
+.username-text .css-1n6n1v5-euiText-m {
   font-size: 18px;
   font-weight: 500;
 }
-.password-text .css-1n6n1v5-euiText-m{
+.password-text .css-1n6n1v5-euiText-m {
   font-size: 18px;
   font-weight: 500;
 }
-.email-text .css-1n6n1v5-euiText-m{
+.email-text .css-1n6n1v5-euiText-m {
   font-size: 18px;
   font-weight: 500;
 }
-.username-fieldText .css-1dnt4yt-euiFieldText{
+.username-fieldText .css-1dnt4yt-euiFieldText {
   border-radius: 4px !important;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
 }
-.password-field .css-p9v0xf-euiFormControlLayout-group{
+.password-field .css-p9v0xf-euiFormControlLayout-group {
   border-radius: 4px !important;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
 }
-.email-fieldText .css-1dnt4yt-euiFieldText{
-    border-radius: 4px !important;
+.email-fieldText .css-1dnt4yt-euiFieldText {
+  border-radius: 4px !important;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
 }
-.userDetail-div{
+.userDetail-div {
   display: flex;
   justify-content: center;
 }
-.userDetail-flexGroup{
-  width : 80%
+.userDetail-flexGroup {
+  width: 80%;
 }
