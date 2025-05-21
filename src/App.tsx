@@ -6,6 +6,7 @@ import { EuiProvider } from "@elastic/eui";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SignUp } from "./subComponents/signUp/signUp";
 import {BooksDetails} from "./subComponents/books/booksDetail"
+import {ProtectedRoute} from "./subComponents/route/protectedRoute"
 
 function App() {
   return (
@@ -15,7 +16,13 @@ function App() {
           <Routes>
             <Route path="/" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/booksdetail" element={<BooksDetails />} />
+            <Route path="/booksdetail" element={
+              <ProtectedRoute>
+
+                <BooksDetails />
+              </ProtectedRoute>
+              } />
+              
           </Routes>
         </Router>
       </EuiProvider>

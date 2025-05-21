@@ -4,6 +4,9 @@ import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldTex
 import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/commonFieldPassword";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
 import {useAddDataMutation} from "../../service/loginService/loginService"
+import { useNavigate } from "react-router-dom";
+
+
 
 
 export const Login: React.FC = () => {
@@ -11,6 +14,8 @@ export const Login: React.FC = () => {
   const [userLoginName,setUserLoginName]= useState("");
   const [userLoginPassword,setUserLoginPassword]=useState("");
   const [postLoginData]= useAddDataMutation();
+
+  const navigate = useNavigate();
 
   const handlePostUserLoginData = async () => {
   try {
@@ -20,6 +25,14 @@ export const Login: React.FC = () => {
     };
 
     const response = await postLoginData(userData).unwrap();
+    if (response.token) {
+      localStorage.setItem("token", response.token);
+      console.log("Login successful, token stored!");
+    } else {
+      console.warn("No token received in response");
+    }
+   
+    navigate("/booksdetail");
     console.log("this is post data", response);
 
     setUserLoginName("");
