@@ -117,10 +117,22 @@ margin: 10px;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
 }
-.userDetail-div {
-  display: flex;
-  justify-content: center;
+
+.booksDetail-main .css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column{
+  margin : 100px 160px 0px 160px;
 }
-.userDetail-flexGroup {
-  width: 80%;
+
+.booksDetail-main .css-1n6n1v5-euiText-m{
+font-weight: 700;
+font-size: 30px;
+}
+.table-group .css-1d6gd2z-euiTable-fixed-uncompressed-desktop{
+   border-radius: 8px !important;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5) !important;
+  border-color: transparent !important;
+}
+.searchField-group .css-t66m08-euiFieldSearch-fullWidth{
+  border-radius: 8px !important;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5) !important;
+  border-color: transparent !important;
 }

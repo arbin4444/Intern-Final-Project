@@ -20,9 +20,8 @@ function App() {
               <ProtectedRoute>
 
                 <BooksDetails />
-              </ProtectedRoute>
+              </ProtectedRoute> 
               } />
-              
           </Routes>
         </Router>
       </EuiProvider>

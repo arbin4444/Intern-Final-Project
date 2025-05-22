@@ -1,8 +1,8 @@
 export interface BookTypes{
-    id: any;
+    id?: any;
     title :string;
     author :string;
-    year:string;
+    year:any;
     quantity: any;
     price:any;
 }

@@ -1,12 +1,14 @@
-import { EuiBasicTable } from "@elastic/eui";
+import { EuiBasicTable, Pagination } from "@elastic/eui";
 import React from "react";
 
 interface CommonTableProps {
-    tableCaption : string;
-    responsiveBreakpoint : boolean;
-    items : any;
-    rowHeader: string;
-    columns : any;
+    tableCaption? : string;
+    responsiveBreakpoint ?: boolean;
+    items ?: any;
+    rowHeader ?: string;
+    columns ?: any;
+    pagination ?: Pagination;
+    onChange ? : any;
 }
 
 export const CommonTable: React.FC<CommonTableProps> = ({
@@ -15,6 +17,8 @@ export const CommonTable: React.FC<CommonTableProps> = ({
     items,
     rowHeader,
     columns,
+    pagination,
+    onChange
 }) => {
   return (
     <>
@@ -24,7 +28,8 @@ export const CommonTable: React.FC<CommonTableProps> = ({
         items={items}
         rowHeader={rowHeader}
         columns={columns}
-
+        pagination={pagination}
+        onChange={onChange}
       />
     </>
   );

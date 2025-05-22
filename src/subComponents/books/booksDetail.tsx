@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useGetDataQuery } from "../../service/bookService/bookService";
 import { useUpdateDataMutation } from "../../service/bookService/bookService";
+import { useDeleteDataMutation } from "../../service/bookService/bookService";
+import { useAddDataMutation } from "../../service/bookService/bookService";
 import { BookTypes } from "../../types/books/bookTypes";
 import {
   Criteria,
@@ -8,35 +10,48 @@ import {
   EuiBasicTableColumn,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFlyout,
-  EuiFlyoutBody,
-  EuiFlyoutFooter,
-  EuiFlyoutHeader,
   EuiIcon,
   EuiPopover,
   EuiText,
   EuiTitle,
-  useGeneratedHtmlId,
 } from "@elastic/eui";
 import { CommonSearchField } from "../../sharedComponents/searchField/commonSearchField";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
 import { CommonEmptyButton } from "../../sharedComponents/button/commonEmptyButton";
 import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldText";
+import { CommonFlyout } from "../../sharedComponents/flyout/commonFlyout";
+import { CommonModal } from "../../sharedComponents/modal/commonModal";
+import {CommonTable} from "../../sharedComponents/table/commonTable";
 
 export const BooksDetails: React.FC = () => {
   const { data, isError, isLoading } = useGetDataQuery();
   const [updateData] = useUpdateDataMutation();
+  const [deleteData] = useDeleteDataMutation();
+  const [addData] = useAddDataMutation();
 
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
 
+  //MODAL
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState<BookTypes | null>(null);
+
+  const closeModal = () => setIsModalVisible(false);
+  const showModal = () => setIsModalVisible(true);
+
+  //fLYOUT
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookTypes | null>(null);
   const [editFlyoutState, setEditFlyoutState] = useState<BookTypes | null>(
     null
   );
 
-  const simpleFlyoutTitleId = useGeneratedHtmlId({
-    prefix: "simpleFlyoutTitle",
+  const [isAddFlyoutVisible, setIsAddFlyoutVisible] = useState(false);
+  const [addBookState, setAddBookState] = useState<BookTypes>({
+    title: "",
+    author: "",
+    year: "",
+    quantity: "",
+    price: "",
   });
 
   //Pagination
@@ -92,21 +107,20 @@ export const BooksDetails: React.FC = () => {
   let flyout;
   if (isFlyoutVisible) {
     flyout = (
-      <EuiFlyout
-        ownFocus
+      <CommonFlyout
+        ownFocus={true}
+        hasBorder={true}
         size="s"
         onClose={() => {
           setIsFlyoutVisible(false);
           setSelectedBook(null);
         }}
-        aria-labelledby={simpleFlyoutTitleId}
-      >
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="m">
-            <h2 id={simpleFlyoutTitleId}>Books Details</h2>
+        header={
+          <EuiTitle>
+            <h2>Books Details</h2>
           </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
+        }
+        body={
           <table>
             <tr>
               <td>
@@ -184,8 +198,8 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
           </table>
-        </EuiFlyoutBody>
-        <EuiFlyoutFooter>
+        }
+        footer={
           <EuiFlexGroup justifyContent="spaceBetween">
             <EuiFlexItem grow={false}>
               <CommonEmptyButton
@@ -213,8 +227,152 @@ export const BooksDetails: React.FC = () => {
               />
             </EuiFlexItem>
           </EuiFlexGroup>
-        </EuiFlyoutFooter>
-      </EuiFlyout>
+        }
+      />
+    );
+  }
+  const handleAddBookDetail = async () => {
+    if (!addBookState) return;
+
+    try {
+      const payload = {
+        ...addBookState,
+        year: parseInt(addBookState.year),
+        quantity: parseInt(addBookState.quantity),
+        price: parseFloat(addBookState.price),
+      };
+
+      await addData(payload).unwrap(); // send to backend
+
+      // Reset the form and close flyout
+      setAddBookState({
+        title: "",
+        author: "",
+        year: "",
+        quantity: "",
+        price: "",
+      });
+      setIsAddFlyoutVisible(false);
+    } catch (error) {
+      console.error("Failed to add book:", error);
+    }
+  };
+  let addFlyout;
+  if (isAddFlyoutVisible) {
+    addFlyout = (
+      <CommonFlyout
+        ownFocus={true}
+        onClose={() => setIsAddFlyoutVisible(false)}
+        size="s"
+        hasBorder={true}
+        header={
+          <EuiTitle>
+            <h2>Books Details</h2>
+          </EuiTitle>
+        }
+        body={
+          <table>
+            <tr>
+              <td>
+                <EuiText>Title</EuiText>
+              </td>
+              <td>
+                <CommonFieldText
+                  value={addBookState?.title || ""}
+                  onChange={(e: { target: { value: string } }) =>
+                    setAddBookState((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <EuiText>Author</EuiText>
+              </td>
+              <td>
+                <CommonFieldText
+                  value={addBookState?.author || ""}
+                  onChange={(e: { target: { value: string } }) =>
+                    setAddBookState((prev) => ({
+                      ...prev,
+                      author: e.target.value,
+                    }))
+                  }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <EuiText>Year</EuiText>
+              </td>
+              <td>
+                <CommonFieldText
+                  value={addBookState?.year?.toString() || ""}
+                  onChange={(e: { target: { value: string } }) =>
+                    setAddBookState((prev) => ({
+                      ...prev,
+                      year: parseInt(e.target.value),
+                    }))
+                  }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <EuiText>Quantity</EuiText>
+              </td>
+              <td>
+                <CommonFieldText
+                  value={addBookState?.quantity?.toString() || ""}
+                  onChange={(e: { target: { value: string } }) =>
+                    setAddBookState((prev) => ({
+                      ...prev,
+                      quantity: parseInt(e.target.value),
+                    }))
+                  }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <EuiText>Price</EuiText>
+              </td>
+              <td>
+                <CommonFieldText
+                  value={addBookState?.price?.toString() || ""}
+                  onChange={(e: { target: { value: string } }) =>
+                    setAddBookState((prev) => ({
+                      ...prev,
+                      price: parseFloat(e.target.value),
+                    }))
+                  }
+                />
+              </td>
+            </tr>
+          </table>
+        }
+        footer={
+          <EuiFlexGroup justifyContent="spaceBetween">
+            <EuiFlexItem grow={false}>
+              <CommonEmptyButton
+                iconType="cross"
+                onClick={() => setIsAddFlyoutVisible(false)}
+                title="close"
+              />
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <CommonButton
+                title="Confirm"
+                fill
+                onClick={handleAddBookDetail}
+              />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        }
+      />
     );
   }
 
@@ -280,8 +438,8 @@ export const BooksDetails: React.FC = () => {
                   iconType="trash"
                   color="danger"
                   onClick={() => {
-                    // Add your delete logic here
-                    console.log("Delete clicked", item.id);
+                    setBookToDelete(item);
+                    showModal();
                     closePopover();
                   }}
                   title="Delete"
@@ -295,9 +453,12 @@ export const BooksDetails: React.FC = () => {
   ];
 
   return (
-    <>
+    <div className="booksDetail-main">
       <EuiFlexGroup direction="column">
-        <EuiFlexGroup>
+        <EuiText>
+          Books Details Application
+        </EuiText>
+        <EuiFlexGroup className="searchField-group">
           <EuiFlexItem>
             <CommonSearchField
               placeholder="Search your books"
@@ -305,13 +466,20 @@ export const BooksDetails: React.FC = () => {
             />
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiFlexGroup justifyContent="flexEnd">
+        <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem grow={false}>
-            <CommonButton title="search" fill={true} />
+            <CommonButton title="Search" fill={true} />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <CommonButton
+              title="Add"
+              fill={true}
+              onClick={() => setIsAddFlyoutVisible(true)}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiFlexGroup>
-          <EuiBasicTable
+        <EuiFlexGroup className="table-group">
+          <CommonTable
             items={pageOfItems}
             columns={columns}
             pagination={pagination}
@@ -320,6 +488,36 @@ export const BooksDetails: React.FC = () => {
         </EuiFlexGroup>
       </EuiFlexGroup>
       {flyout}
-    </>
+      {addFlyout}
+      {isModalVisible && bookToDelete && (
+        <CommonModal
+          title="Delete Book Details"
+          onCancel={() => {
+            setIsModalVisible(false);
+            setBookToDelete(null);
+          }}
+          onConfirm={async () => {
+            if (!bookToDelete) return;
+
+            try {
+              await deleteData(bookToDelete.id).unwrap();
+              setIsModalVisible(false);
+              setBookToDelete(null);
+            } catch (error) {
+              console.error("Failed to delete book:", error);
+            }
+          }}
+          cancelButtonText="Cancel"
+          confirmButtonText="Delete"
+          defaultFocusedButton="confirm"
+          details={
+            <p>
+              Are you sure you want to delete Book Details. It will delete
+              permanently.
+            </p>
+          }
+        />
+      )}
+    </div>
   );
 };

@@ -19,7 +19,14 @@ export const booksApi = createApi({
     //   transformResponse: (data:BookTypes[])=>data.reverse(),
       providesTags: ['Data'] //for refetch data
     }),
-    
+    addData : builder.mutation ({
+      query : (data)=>({
+        url : '/books',
+        method : 'POST',
+        body : data,
+      }),
+      invalidatesTags: ['Data']//for refetch data
+    }),
     updateData : builder.mutation({
       query : ({id,...updatedData})=>({
         url : `/books/${id}`,
@@ -28,8 +35,15 @@ export const booksApi = createApi({
       }),
       invalidatesTags: ['Data']
     }),
+    deleteData : builder.mutation({
+      query : (id)=>({
+        url : `/books/${id}`,
+        method : 'DELETE',
+      }),
+      invalidatesTags: ['Data']
+    }),
   }),
   
 });
 
-export const { useGetDataQuery,useUpdateDataMutation} = booksApi;
+export const { useGetDataQuery, useAddDataMutation,useUpdateDataMutation,useDeleteDataMutation} = booksApi;
