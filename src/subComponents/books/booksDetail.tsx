@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetDataQuery } from "../../service/bookService/bookService";
 import { useUpdateDataMutation } from "../../service/bookService/bookService";
 import { useDeleteDataMutation } from "../../service/bookService/bookService";
 import { useAddDataMutation } from "../../service/bookService/bookService";
+import { useSearchDataQuery } from "../../service/bookService/bookService";
+import { useBuyBooksMutation } from "../../service/bookService/bookService";
 import { BookTypes } from "../../types/books/bookTypes";
 import {
   Criteria,
-  EuiBasicTable,
   EuiBasicTableColumn,
   EuiFlexGroup,
   EuiFlexItem,
@@ -21,19 +22,41 @@ import { CommonEmptyButton } from "../../sharedComponents/button/commonEmptyButt
 import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldText";
 import { CommonFlyout } from "../../sharedComponents/flyout/commonFlyout";
 import { CommonModal } from "../../sharedComponents/modal/commonModal";
-import {CommonTable} from "../../sharedComponents/table/commonTable";
+import { CommonTable } from "../../sharedComponents/table/commonTable";
 
 export const BooksDetails: React.FC = () => {
   const { data, isError, isLoading } = useGetDataQuery();
   const [updateData] = useUpdateDataMutation();
   const [deleteData] = useDeleteDataMutation();
   const [addData] = useAddDataMutation();
+  const [buyBook] = useBuyBooksMutation();
+
+  const [searchBook, setSearchBook] = useState("");
+  const {
+    data: filteredData,
+    isFetching: isSearching,
+    isError: isSearchError,
+  } = useSearchDataQuery(searchBook, { skip: searchBook === "" });
+  const booksToShow = searchBook ? filteredData : data;
+  const [searchInput, setSearchInput] = useState("");
+
+  //debouncing Method
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchBook(searchInput);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchInput]);
 
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
 
   //MODAL
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<BookTypes | null>(null);
+
+  const [bookToBuy, setBookToBuy] = useState<BookTypes | null>(null);
+  const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
 
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
@@ -66,7 +89,7 @@ export const BooksDetails: React.FC = () => {
     }
   };
   // Manually handle pagination of data
-  const findUsers = (
+  const findBooks = (
     data: BookTypes[],
     pageIndex: number,
     pageSize: number
@@ -88,8 +111,8 @@ export const BooksDetails: React.FC = () => {
     };
   };
 
-  const { pageOfItems, totalItemCount } = findUsers(
-    data ?? [],
+  const { pageOfItems, totalItemCount } = findBooks(
+    booksToShow ?? [],
     pageIndex,
     pageSize
   );
@@ -99,6 +122,20 @@ export const BooksDetails: React.FC = () => {
     pageSize,
     totalItemCount,
     pageSizeOptions: [10, 5, 0],
+  };
+
+  //Handling buy Books
+  const handleBuyBook = async () => {
+    if (!bookToBuy) return;
+    try {
+      await buyBook({
+        items: [{ bookId: bookToBuy.id, quantity: 1 }],
+      }).unwrap(); // Buy 1 copy
+      setBookToBuy(null);
+      setIsBuyModalVisible(false);
+    } catch (error) {
+      console.error("Failed to buy book:", error);
+    }
   };
 
   if (isError) return <p>Error has occurred</p>;
@@ -445,6 +482,17 @@ export const BooksDetails: React.FC = () => {
                   title="Delete"
                 />
               </EuiFlexItem>
+              <EuiFlexItem>
+                <CommonEmptyButton
+                  iconType="shoppingCart"
+                  onClick={() => {
+                    setBookToBuy(item); // new state
+                    setIsBuyModalVisible(true); // new modal
+                    closePopover();
+                  }}
+                  title="Buy"
+                />
+              </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPopover>
         );
@@ -455,21 +503,18 @@ export const BooksDetails: React.FC = () => {
   return (
     <div className="booksDetail-main">
       <EuiFlexGroup direction="column">
-        <EuiText>
-          Books Details Application
-        </EuiText>
+        <EuiText>Books Details Application</EuiText>
         <EuiFlexGroup className="searchField-group">
           <EuiFlexItem>
             <CommonSearchField
               placeholder="Search your books"
               fullWidth={true}
+              value={searchInput}
+              onChange={(value: string) => setSearchInput(value)}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiFlexGroup justifyContent="spaceBetween">
-          <EuiFlexItem grow={false}>
-            <CommonButton title="Search" fill={true} />
-          </EuiFlexItem>
+        <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
             <CommonButton
               title="Add"
@@ -514,6 +559,25 @@ export const BooksDetails: React.FC = () => {
             <p>
               Are you sure you want to delete Book Details. It will delete
               permanently.
+            </p>
+          }
+        />
+      )}
+      {isBuyModalVisible && bookToBuy && (
+        <CommonModal
+          title="Buy Book"
+          onCancel={() => {
+            setBookToBuy(null);
+            setIsBuyModalVisible(false);
+          }}
+          onConfirm={handleBuyBook}
+          cancelButtonText="Cancel"
+          confirmButtonText="Confirm"
+          defaultFocusedButton="confirm"
+          details={
+            <p>
+              Are you sure you want to buy "<strong>{bookToBuy.title}</strong>"
+              for ${bookToBuy.price}?
             </p>
           }
         />
