@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetDataQuery } from "../../service/bookService/bookService";
 import { useUpdateDataMutation } from "../../service/bookService/bookService";
 import { useDeleteDataMutation } from "../../service/bookService/bookService";
@@ -11,6 +12,7 @@ import {
   EuiBasicTableColumn,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiGlobalToastList,
   EuiIcon,
   EuiPopover,
   EuiText,
@@ -23,6 +25,9 @@ import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldTex
 import { CommonFlyout } from "../../sharedComponents/flyout/commonFlyout";
 import { CommonModal } from "../../sharedComponents/modal/commonModal";
 import { CommonTable } from "../../sharedComponents/table/commonTable";
+import { CommonToast } from "../../sharedComponents/toast/commonToast";
+import { addToCart } from "../../slices/cart/cartSlices";
+import { RootState } from "../../store";
 
 export const BooksDetails: React.FC = () => {
   const { data, isError, isLoading } = useGetDataQuery();
@@ -30,6 +35,10 @@ export const BooksDetails: React.FC = () => {
   const [deleteData] = useDeleteDataMutation();
   const [addData] = useAddDataMutation();
   const [buyBook] = useBuyBooksMutation();
+
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const [searchBook, setSearchBook] = useState("");
   const {
@@ -48,6 +57,18 @@ export const BooksDetails: React.FC = () => {
 
     return () => clearTimeout(handler);
   }, [searchInput]);
+
+  const [toasts, setToasts] = useState<
+    Array<{
+      id: string;
+      title: string;
+      color?: "primary" | "success" | "warning" | "danger" | undefined;
+
+      iconType?: string;
+      text?: React.ReactNode;
+      toastLifeTimeMs?: number;
+    }>
+  >([]);
 
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
 
@@ -76,6 +97,17 @@ export const BooksDetails: React.FC = () => {
     quantity: "",
     price: "",
   });
+
+  const addToast = (toast: Omit<(typeof toasts)[0], "id">) => {
+    const id = `toast${Date.now()}`;
+    setToasts((prevToasts) => [...prevToasts, { id, ...toast }]);
+  };
+
+  const removeToast = (removedToast: { id: string }) => {
+    setToasts((prevToasts) =>
+      prevToasts.filter((toast) => toast.id !== removedToast.id)
+    );
+  };
 
   //Pagination
   const [pageIndex, setPageIndex] = useState(0);
@@ -131,6 +163,19 @@ export const BooksDetails: React.FC = () => {
       await buyBook({
         items: [{ bookId: bookToBuy.id, quantity: 1 }],
       }).unwrap(); // Buy 1 copy
+
+      addToast({
+        title: "Success",
+        color: "success",
+        iconType: "check",
+        text: (
+          <p>
+            You have successfully purchased <strong>{bookToBuy.title}</strong>{" "}
+            for ${bookToBuy.price}.
+          </p>
+        ),
+      });
+
       setBookToBuy(null);
       setIsBuyModalVisible(false);
     } catch (error) {
@@ -254,6 +299,18 @@ export const BooksDetails: React.FC = () => {
 
                   try {
                     await updateData(editFlyoutState).unwrap();
+
+                    addToast({
+                      title: "Success",
+                      color: "success",
+                      iconType: "check",
+                      text: (
+                        <p>
+                          You have updated the book{" "}
+                          <strong>{editFlyoutState.title}</strong> successfully.
+                        </p>
+                      ),
+                    });
                     setIsFlyoutVisible(false);
                     setEditFlyoutState(null);
                     setSelectedBook(null);
@@ -274,12 +331,26 @@ export const BooksDetails: React.FC = () => {
     try {
       const payload = {
         ...addBookState,
-        year: parseInt(addBookState.year),
-        quantity: parseInt(addBookState.quantity),
-        price: parseFloat(addBookState.price),
+        title: addBookState.title.trim(),
+        author: addBookState.author.trim(),
+        year: parseInt(addBookState.year.toString().trim(), 10),
+        quantity: parseInt(addBookState.quantity.toString().trim(), 10),
+        price: parseFloat(addBookState.price.toString().trim()),
       };
 
       await addData(payload).unwrap(); // send to backend
+
+      addToast({
+        title: "Success",
+        color: "success",
+        iconType: "check",
+        text: (
+          <p>
+            You have added the book <strong>{payload.title}</strong>{" "}
+            successfully.
+          </p>
+        ),
+      });
 
       // Reset the form and close flyout
       setAddBookState({
@@ -484,13 +555,52 @@ export const BooksDetails: React.FC = () => {
               </EuiFlexItem>
               <EuiFlexItem>
                 <CommonEmptyButton
-                  iconType="shoppingCart"
+                  iconType="check"
                   onClick={() => {
                     setBookToBuy(item); // new state
                     setIsBuyModalVisible(true); // new modal
                     closePopover();
                   }}
                   title="Buy"
+                />
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <CommonEmptyButton
+                  iconType="plusInCircle"
+                  onClick={() => {
+                    const isBookInCart = cartItems.some(
+                      (cartItem) => cartItem.id === item.id
+                    );
+
+                    if (isBookInCart) {
+                      addToast({
+                        title: "Already in Cart",
+                        color: "danger",
+                        iconType: "alert",
+                        text: (
+                          <p>
+                            <strong>{item.title}</strong> is already added to
+                            your cart.
+                          </p>
+                        ),
+                      });
+                    } else {
+                      dispatch(addToCart(item));
+                      addToast({
+                        title: "Success",
+                        color: "success",
+                        iconType: "check",
+                        text: (
+                          <p>
+                            Your favourite book <strong>{item.title}</strong> is
+                            added to cart.
+                          </p>
+                        ),
+                      });
+                    }
+                    closePopover();
+                  }}
+                  title="Add to Cart"
                 />
               </EuiFlexItem>
             </EuiFlexGroup>
@@ -514,13 +624,26 @@ export const BooksDetails: React.FC = () => {
             />
           </EuiFlexItem>
         </EuiFlexGroup>
+        {isSearching && (
+          <EuiText color="subdued" size="s">
+            Searching for books...
+          </EuiText>
+        )}
+
+        {isSearchError && (
+          <EuiText color="danger" size="s">
+            Failed to search books. Please try again.
+          </EuiText>
+        )}
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <CommonButton
-              title="Add"
-              fill={true}
-              onClick={() => setIsAddFlyoutVisible(true)}
-            />
+            <div className="addBook-btn">
+              <CommonButton
+                title="Add"
+                fill={true}
+                onClick={() => setIsAddFlyoutVisible(true)}
+              />
+            </div>
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiFlexGroup className="table-group">
@@ -531,7 +654,31 @@ export const BooksDetails: React.FC = () => {
             onChange={onTableChange}
           />
         </EuiFlexGroup>
+
+        <EuiFlexGroup className="cart-bookNumber">
+          <EuiFlexItem grow={false}>
+            <EuiText>
+              No. of Books added to your Cart: <strong>{totalQuantity}</strong>
+            </EuiText>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        {cartItems.length > 0 && (
+          <EuiFlexGroup direction="column" gutterSize="s">
+            <EuiFlexItem className="cart-bookDetail">
+              <EuiText>Books in Your Cart:</EuiText>
+            </EuiFlexItem>
+            {cartItems.map((item) => (
+              <EuiFlexItem key={item.id}>
+                <EuiText size="s">
+                  <strong>{item.title}</strong> by {item.author} — Quantity:{" "}
+                  {item.quantity}, Price: {item.price}
+                </EuiText>
+              </EuiFlexItem>
+            ))}
+          </EuiFlexGroup>
+        )}
       </EuiFlexGroup>
+
       {flyout}
       {addFlyout}
       {isModalVisible && bookToDelete && (
@@ -546,6 +693,17 @@ export const BooksDetails: React.FC = () => {
 
             try {
               await deleteData(bookToDelete.id).unwrap();
+              addToast({
+                title: "Success",
+                color: "success",
+                iconType: "check",
+                text: (
+                  <p>
+                    You have deleted the book{" "}
+                    <strong>{bookToDelete.title}</strong> successfully.
+                  </p>
+                ),
+              });
               setIsModalVisible(false);
               setBookToDelete(null);
             } catch (error) {
@@ -561,6 +719,7 @@ export const BooksDetails: React.FC = () => {
               permanently.
             </p>
           }
+          buttonColor="danger"
         />
       )}
       {isBuyModalVisible && bookToBuy && (
@@ -577,11 +736,17 @@ export const BooksDetails: React.FC = () => {
           details={
             <p>
               Are you sure you want to buy "<strong>{bookToBuy.title}</strong>"
-              for ${bookToBuy.price}?
+              for {bookToBuy.price}?
             </p>
           }
         />
       )}
+
+      <CommonToast
+        toasts={toasts}
+        dismissToast={removeToast}
+        toastLifeTimeMs={6000}
+      />
     </div>
   );
 };

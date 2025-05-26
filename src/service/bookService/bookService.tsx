@@ -64,5 +64,5 @@ export const {
   useUpdateDataMutation,
   useDeleteDataMutation,
   useSearchDataQuery,
-  useBuyBooksMutation
+  useBuyBooksMutation,
 } = booksApi;

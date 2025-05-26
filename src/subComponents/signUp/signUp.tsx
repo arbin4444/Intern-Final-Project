@@ -13,24 +13,23 @@ export const SignUp: React.FC = () => {
   const [postSignupData] = useAddDataMutation();
 
   const handlePostUserData = async () => {
-  try {
-    const userData = {
-      username: userSignupName.trim(),
-      email: userSignupEmail.trim(),
-      password: userSignupPassword.trim(),
-    };
+    try {
+      const userData = {
+        username: userSignupName.trim(),
+        email: userSignupEmail.trim(),
+        password: userSignupPassword.trim(),
+      };
 
-    const response = await postSignupData(userData).unwrap();
-    console.log("this is post data", response);
+      const response = await postSignupData(userData).unwrap();
+      console.log("this is post data", response);
 
-    setUserSignupName("");
-    setUserSignupEmail("");
-    setUserSignupPassword("");
-  } catch (err) {
-    console.error("Error during signup:", err);
-  }
-};
-
+      setUserSignupName("");
+      setUserSignupEmail("");
+      setUserSignupPassword("");
+    } catch (err) {
+      console.error("Error during signup:", err);
+    }
+  };
 
   const handleUserNameChange = (e: {
     preventDefault: () => void;
@@ -93,7 +92,11 @@ export const SignUp: React.FC = () => {
               />
             </EuiFlexItem>
           </EuiFlexGroup>
-          <EuiFlexGroup gutterSize="xl" alignItems="center">
+          <EuiFlexGroup
+            className="signup-password"
+            gutterSize="xl"
+            alignItems="center"
+          >
             <EuiFlexItem className="password-text" grow={false}>
               <EuiText>Password</EuiText>
             </EuiFlexItem>
@@ -108,12 +111,14 @@ export const SignUp: React.FC = () => {
           </EuiFlexGroup>
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
-              <EuiText><Link to="/login">or Do you have your account already?</Link></EuiText>
+              <EuiText className="signup-link">
+                <Link to="/login">I have my account</Link>
+              </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
-              <div>
+              <div className="signup-btn">
                 <CommonButton
                   fill={true}
                   title="SignUp"

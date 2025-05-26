@@ -118,21 +118,92 @@ margin: 10px;
   border-color: transparent !important;
 }
 
-.booksDetail-main .css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column{
-  margin : 100px 160px 0px 160px;
+.booksDetail-main .css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column {
+  margin: 100px 140px 0px 140px;
 }
 
-.booksDetail-main .css-1n6n1v5-euiText-m{
-font-weight: 700;
-font-size: 30px;
+.booksDetail-main .css-1n6n1v5-euiText-m {
+  font-weight: 700;
+  font-size: 30px;
 }
-.table-group .css-1d6gd2z-euiTable-fixed-uncompressed-desktop{
-   border-radius: 8px !important;
+.table-group.css-1drqwgc-euiFlexGroup-responsive-l-flexStart-stretch-row {
+  border-radius: 8px !important;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
+  padding: 10px;
 }
-.searchField-group .css-t66m08-euiFieldSearch-fullWidth{
+.table-group .css-1d6gd2z-euiTable-fixed-uncompressed-desktop {
+  border-radius: 8px !important;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5) !important;
+  border-color: transparent !important;
+}
+.searchField-group .css-t66m08-euiFieldSearch-fullWidth {
   border-radius: 8px !important;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5) !important;
   border-color: transparent !important;
+}
+.cart-bookNumber .css-1n6n1v5-euiText-m {
+  font-weight: 400;
+  font-size: 20px;
+}
+.cart-bookDetail .css-1n6n1v5-euiText-m{
+  font-weight: 500;
+  font-size: 25px;
+}
+
+@media screen and (max-width: 767px) {
+  .email-fieldText.css-9sbomz-euiFlexItem-grow-1 {
+    margin: 0 0 0 0;
+  }
+  .username-fieldText.css-9sbomz-euiFlexItem-grow-1 {
+    margin: 0 0 0 0;
+  }
+  .signup-btn {
+    display: flex;
+    justify-content: center;
+  }
+  .signup-text .css-1n6n1v5-euiText-m {
+    font-size: 26px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+  }
+  .signup-link.css-1n6n1v5-euiText-m {
+    display: flex;
+    justify-content: center;
+  }
+  .signup-password.css-1lanpaf-euiFlexGroup-responsive-xl-flexStart-center-row {
+    gap: 29px;
+  }
+  .login-text .css-1n6n1v5-euiText-m {
+    display: flex;
+    justify-content: center;
+  }
+  .login-password.css-1lanpaf-euiFlexGroup-responsive-xl-flexStart-center-row {
+    gap: 26px;
+  }
+  .login-btn {
+    display: flex;
+    justify-content: center;
+  }
+  .addBook-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .booksDetail-main .css-1n6n1v5-euiText-m {
+    font-weight: 600;
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 696px) {
+  .booksDetail-main .css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column {
+    margin: 100px 60px 0px 60px;
+  }
+}
+@media screen and (max-width: 497px) {
+  .booksDetail-main .css-1n6n1v5-euiText-m {
+    font-weight: 600;
+    font-size: 18px;
+  }
 }
