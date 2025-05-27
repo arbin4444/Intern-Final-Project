@@ -112,7 +112,7 @@ export const SignUp: React.FC = () => {
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
               <EuiText className="signup-link">
-                <Link to="/login">I have my account</Link>
+                <Link to="/">Click here if you have account already</Link>
               </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>

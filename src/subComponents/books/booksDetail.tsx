@@ -12,7 +12,6 @@ import {
   EuiBasicTableColumn,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiGlobalToastList,
   EuiIcon,
   EuiPopover,
   EuiText,
@@ -171,7 +170,7 @@ export const BooksDetails: React.FC = () => {
         text: (
           <p>
             You have successfully purchased <strong>{bookToBuy.title}</strong>{" "}
-            for ${bookToBuy.price}.
+            for {bookToBuy.price}.
           </p>
         ),
       });
@@ -199,16 +198,17 @@ export const BooksDetails: React.FC = () => {
         }}
         header={
           <EuiTitle>
-            <h2>Books Details</h2>
+            <h2>Update Book Details</h2>
           </EuiTitle>
         }
         body={
           <table>
+            <tbody>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Title</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.title || ""}
                   onChange={(e: { target: { value: any } }) =>
@@ -219,11 +219,11 @@ export const BooksDetails: React.FC = () => {
                 />
               </td>
             </tr>
-            <tr>
+            <tr className="table-title">
               <td>
                 <EuiText>Author</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.author || ""}
                   onChange={(e: { target: { value: any } }) =>
@@ -235,10 +235,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Year</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.year?.toString() || ""}
                   onChange={(e: { target: { value: any } }) =>
@@ -250,10 +250,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Quantity</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.quantity?.toString() || ""}
                   onChange={(e: { target: { value: any } }) =>
@@ -265,10 +265,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Price</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.price?.toString() || ""}
                   onChange={(e: { target: { value: any } }) =>
@@ -279,6 +279,7 @@ export const BooksDetails: React.FC = () => {
                 />
               </td>
             </tr>
+            </tbody>
           </table>
         }
         footer={
@@ -375,16 +376,17 @@ export const BooksDetails: React.FC = () => {
         hasBorder={true}
         header={
           <EuiTitle>
-            <h2>Books Details</h2>
+            <h2>Add Book Details</h2>
           </EuiTitle>
         }
         body={
           <table>
+            <tbody>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Title</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={addBookState?.title || ""}
                   onChange={(e: { target: { value: string } }) =>
@@ -397,10 +399,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Author</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={addBookState?.author || ""}
                   onChange={(e: { target: { value: string } }) =>
@@ -413,10 +415,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Year</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={addBookState?.year?.toString() || ""}
                   onChange={(e: { target: { value: string } }) =>
@@ -429,10 +431,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Quantity</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={addBookState?.quantity?.toString() || ""}
                   onChange={(e: { target: { value: string } }) =>
@@ -445,10 +447,10 @@ export const BooksDetails: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>
+              <td className="table-title">
                 <EuiText>Price</EuiText>
               </td>
-              <td>
+              <td className="table-field">
                 <CommonFieldText
                   value={addBookState?.price?.toString() || ""}
                   onChange={(e: { target: { value: string } }) =>
@@ -460,6 +462,7 @@ export const BooksDetails: React.FC = () => {
                 />
               </td>
             </tr>
+            </tbody>
           </table>
         }
         footer={

@@ -13,12 +13,12 @@ export const CommonFieldText: React.FC<CommonFieldTextProps> = ({
   onChange,
 }) => {
   return (
-    <>
+    <div className="common-fieldText">
       <EuiFieldText
         value={value}
         placeholder={placeholder}
         onChange={onChange}
       />
-    </>
+    </div>
   );
 };

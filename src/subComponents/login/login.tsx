@@ -5,6 +5,7 @@ import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/common
 import { CommonButton } from "../../sharedComponents/button/commonButton";
 import { useAddDataMutation } from "../../service/loginService/loginService";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Login: React.FC = () => {
   const [userLoginName, setUserLoginName] = useState("");
@@ -94,6 +95,13 @@ export const Login: React.FC = () => {
               />
             </EuiFlexItem>
           </EuiFlexGroup>
+          <EuiFlexGroup justifyContent="center">
+                      <EuiFlexItem grow={false}>
+                        <EuiText className="login-link">
+                          <Link to="/signup">Register here to login</Link>
+                        </EuiText>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
               <div className="login-btn">

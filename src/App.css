@@ -172,6 +172,10 @@ margin: 10px;
     display: flex;
     justify-content: center;
   }
+  .login-link.css-1n6n1v5-euiText-m {
+    display: flex;
+    justify-content: center;
+  }
   .signup-password.css-1lanpaf-euiFlexGroup-responsive-xl-flexStart-center-row {
     gap: 29px;
   }
@@ -206,4 +210,24 @@ margin: 10px;
     font-weight: 600;
     font-size: 18px;
   }
+}
+.table-title{
+  width:34%!important;
+ 
+}
+.table-field{
+  width:66%!important;
+  
+}
+.common-fieldText .css-k0u44b-euiFormControlLayout{
+  margin: 6px 0px 6px 0px;
+}
+.table-group .css-ykrjwq-euiTableCellContent-euiTableHeaderCell__content{
+font-size: 16px;
+padding: 3px;
+height: 27px;
+}
+.table-group .css-3uekwx-euiTableRowCell__mobileHeader{
+font-size: 14px;
+padding: 3px;
 }
