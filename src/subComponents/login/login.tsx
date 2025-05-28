@@ -58,8 +58,6 @@ export const Login: React.FC = () => {
               <EuiText>LogIn</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
-
-          {/* Username Field */}
           <EuiFlexGroup alignItems="center">
             <EuiFlexItem className="username-text" grow={false}>
               <EuiText>UserName</EuiText>
@@ -77,8 +75,6 @@ export const Login: React.FC = () => {
               )}
             </EuiFlexItem>
           </EuiFlexGroup>
-
-          {/* Password Field */}
           <EuiFlexGroup gutterSize="xl" alignItems="center" className="login-password">
             <EuiFlexItem className="password-text" grow={false}>
               <EuiText>Password</EuiText>

@@ -40,7 +40,7 @@ export const SignUp: React.FC = () => {
       return;
     }
 
-    setSignupErrors({}); // Clear any old errors
+    setSignupErrors({}); 
 
     try {
       const userData = {

@@ -177,7 +177,7 @@ export const BooksDetails: React.FC = () => {
     try {
       await buyBook({
         items: [{ bookId: bookToBuy.id, quantity: 1 }],
-      }).unwrap(); // Buy 1 copy
+      }).unwrap(); 
 
       addToast({
         title: "Success",
@@ -228,7 +228,7 @@ export const BooksDetails: React.FC = () => {
     return;
   }
 
-  setEditErrors({}); // clear old errors
+  setEditErrors({}); 
 
   try {
     const payload = {
@@ -427,7 +427,7 @@ if (isFlyoutVisible) {
     return;
   }
 
-  setErrors({}); // clear previous errors
+  setErrors({}); 
 
   try {
     const payload = {
@@ -439,8 +439,7 @@ if (isFlyoutVisible) {
     };
 
     await addData(payload).unwrap();
-
-    // ✅ Success Toast
+ 
     addToast({
       title: "Success",
       color: "success",
@@ -452,7 +451,6 @@ if (isFlyoutVisible) {
       ),
     });
 
-    // Reset form and close flyout
     setAddBookState({
       title: "",
       author: "",
@@ -465,7 +463,6 @@ if (isFlyoutVisible) {
   } catch (error) {
     console.error("Failed to add book:", error);
 
-    // Optional: error toast
     addToast({
       title: "Error",
       color: "danger",
@@ -699,8 +696,8 @@ if (isFlyoutVisible) {
                 <CommonEmptyButton
                   iconType="check"
                   onClick={() => {
-                    setBookToBuy(item); // new state
-                    setIsBuyModalVisible(true); // new modal
+                    setBookToBuy(item); 
+                    setIsBuyModalVisible(true);
                     closePopover();
                   }}
                   title="Buy"
