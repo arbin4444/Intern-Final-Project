@@ -12,7 +12,36 @@ export const SignUp: React.FC = () => {
   const [userSignupPassword, setUserSignupPassword] = useState("");
   const [postSignupData] = useAddDataMutation();
 
+  const [signupErrors, setSignupErrors] = useState<{
+    username?: string;
+    email?: string;
+    password?: string;
+  }>({});
+
   const handlePostUserData = async () => {
+    const newErrors: typeof signupErrors = {};
+
+    if (!userSignupName.trim()) {
+      newErrors.username = "Username is required.";
+    }
+
+    if (!userSignupEmail.trim()) {
+      newErrors.email = "Email is required.";
+    }
+
+    if (!userSignupPassword.trim()) {
+      newErrors.password = "Password is required.";
+    } else if (userSignupPassword.trim().length < 8) {
+      newErrors.password = "Password must be at least 8 characters.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setSignupErrors(newErrors);
+      return;
+    }
+
+    setSignupErrors({}); // Clear any old errors
+
     try {
       const userData = {
         username: userSignupName.trim(),
@@ -78,6 +107,11 @@ export const SignUp: React.FC = () => {
                 placeholder="Enter Username"
                 onChange={handleUserNameChange}
               />
+              {signupErrors.username && (
+                <EuiText color="danger" size="s">
+                  {signupErrors.username}
+                </EuiText>
+              )}
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup alignItems="center">
@@ -90,6 +124,11 @@ export const SignUp: React.FC = () => {
                 placeholder="Enter Your Email"
                 onChange={handleUserEmailChange}
               />
+              {signupErrors.email && (
+                <EuiText color="danger" size="s">
+                  {signupErrors.email}
+                </EuiText>
+              )}
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup
@@ -107,6 +146,11 @@ export const SignUp: React.FC = () => {
                 placeholder="Password"
                 onChange={handleUserPasswordChange}
               />
+              {signupErrors.password && (
+                <EuiText color="danger" size="s">
+                  {signupErrors.password}
+                </EuiText>
+              )}
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiFlexGroup justifyContent="center">

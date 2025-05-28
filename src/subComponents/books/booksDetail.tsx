@@ -39,6 +39,22 @@ export const BooksDetails: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const [errors, setErrors] = useState<{
+    title?: string;
+    author?: string;
+    year?: string;
+    quantity?: string;
+    price?: string;
+  }>({});
+
+  const [editErrors, setEditErrors] = useState<{
+  title?: string;
+  author?: string;
+  year?: string;
+  quantity?: string;
+  price?: string;
+}>({});
+
   const [searchBook, setSearchBook] = useState("");
   const {
     data: filteredData,
@@ -185,25 +201,84 @@ export const BooksDetails: React.FC = () => {
   if (isError) return <p>Error has occurred</p>;
   if (isLoading) return <p>Still Loading, please wait for results...</p>;
 
+
+  const handleUpdateBook = async () => {
+  if (!editFlyoutState) return;
+
+  const { title, author, year, quantity, price } = editFlyoutState;
+  const newErrors: typeof editErrors = {};
+
+  if (!title?.trim()) newErrors.title = "Title is required.";
+  if (!author?.trim()) newErrors.author = "Author is required.";
+
+  const parsedYear = parseInt(year?.toString().trim(), 10);
+  if (isNaN(parsedYear) || parsedYear <= 0)
+    newErrors.year = "Year must be a positive number.";
+
+  const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
+  if (isNaN(parsedQuantity) || parsedQuantity <= 0)
+    newErrors.quantity = "Quantity must be a positive number.";
+
+  const parsedPrice = parseFloat(price?.toString().trim());
+  if (isNaN(parsedPrice) || parsedPrice <= 0)
+    newErrors.price = "Price must be a positive number.";
+
+  if (Object.keys(newErrors).length > 0) {
+    setEditErrors(newErrors);
+    return;
+  }
+
+  setEditErrors({}); // clear old errors
+
+  try {
+    const payload = {
+      ...editFlyoutState,
+      title: title.trim(),
+      author: author.trim(),
+      year: parsedYear,
+      quantity: parsedQuantity,
+      price: parsedPrice,
+    };
+
+    await updateData(payload).unwrap();
+
+    addToast({
+      title: "Success",
+      color: "success",
+      iconType: "check",
+      text: (
+        <p>
+          You have updated the book <strong>{payload.title}</strong> successfully.
+        </p>
+      ),
+    });
+
+    setIsFlyoutVisible(false);
+    setEditFlyoutState(null);
+    setSelectedBook(null);
+  } catch (error) {
+    console.error("Update failed:", error);
+  }
+};
   let flyout;
-  if (isFlyoutVisible) {
-    flyout = (
-      <CommonFlyout
-        ownFocus={true}
-        hasBorder={true}
-        size="s"
-        onClose={() => {
-          setIsFlyoutVisible(false);
-          setSelectedBook(null);
-        }}
-        header={
-          <EuiTitle>
-            <h2>Update Book Details</h2>
-          </EuiTitle>
-        }
-        body={
-          <table>
-            <tbody>
+if (isFlyoutVisible) {
+  flyout = (
+    <CommonFlyout
+      ownFocus={true}
+      hasBorder={true}
+      size="s"
+      onClose={() => {
+        setIsFlyoutVisible(false);
+        setSelectedBook(null);
+      }}
+      header={
+        <EuiTitle>
+          <h2>Update Book Details</h2>
+        </EuiTitle>
+      }
+      body={
+        <table>
+          <tbody>
             <tr>
               <td className="table-title">
                 <EuiText>Title</EuiText>
@@ -211,29 +286,41 @@ export const BooksDetails: React.FC = () => {
               <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.title || ""}
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: any; }; }) =>
                     setEditFlyoutState((prev) =>
                       prev ? { ...prev, title: e.target.value } : null
                     )
                   }
                 />
+                {editErrors.title && (
+                  <EuiText color="danger" size="s">
+                    {editErrors.title}
+                  </EuiText>
+                )}
               </td>
             </tr>
-            <tr className="table-title">
-              <td>
+
+            <tr>
+              <td className="table-title">
                 <EuiText>Author</EuiText>
               </td>
               <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.author || ""}
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: any; }; }) =>
                     setEditFlyoutState((prev) =>
                       prev ? { ...prev, author: e.target.value } : null
                     )
                   }
                 />
+                {editErrors.author && (
+                  <EuiText color="danger" size="s">
+                    {editErrors.author}
+                  </EuiText>
+                )}
               </td>
             </tr>
+
             <tr>
               <td className="table-title">
                 <EuiText>Year</EuiText>
@@ -241,14 +328,20 @@ export const BooksDetails: React.FC = () => {
               <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.year?.toString() || ""}
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: any; }; }) =>
                     setEditFlyoutState((prev) =>
                       prev ? { ...prev, year: e.target.value } : null
                     )
                   }
                 />
+                {editErrors.year && (
+                  <EuiText color="danger" size="s">
+                    {editErrors.year}
+                  </EuiText>
+                )}
               </td>
             </tr>
+
             <tr>
               <td className="table-title">
                 <EuiText>Quantity</EuiText>
@@ -256,14 +349,20 @@ export const BooksDetails: React.FC = () => {
               <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.quantity?.toString() || ""}
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: any; }; }) =>
                     setEditFlyoutState((prev) =>
                       prev ? { ...prev, quantity: e.target.value } : null
                     )
                   }
                 />
+                {editErrors.quantity && (
+                  <EuiText color="danger" size="s">
+                    {editErrors.quantity}
+                  </EuiText>
+                )}
               </td>
             </tr>
+
             <tr>
               <td className="table-title">
                 <EuiText>Price</EuiText>
@@ -271,101 +370,112 @@ export const BooksDetails: React.FC = () => {
               <td className="table-field">
                 <CommonFieldText
                   value={editFlyoutState?.price?.toString() || ""}
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: any; }; }) =>
                     setEditFlyoutState((prev) =>
                       prev ? { ...prev, price: e.target.value } : null
                     )
                   }
                 />
+                {editErrors.price && (
+                  <EuiText color="danger" size="s">
+                    {editErrors.price}
+                  </EuiText>
+                )}
               </td>
             </tr>
-            </tbody>
-          </table>
-        }
-        footer={
-          <EuiFlexGroup justifyContent="spaceBetween">
-            <EuiFlexItem grow={false}>
-              <CommonEmptyButton
-                iconType="cross"
-                onClick={() => setIsFlyoutVisible(false)}
-                title="close"
-              />
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <CommonButton
-                title="Update"
-                fill
-                onClick={async () => {
-                  if (!editFlyoutState) return;
-
-                  try {
-                    await updateData(editFlyoutState).unwrap();
-
-                    addToast({
-                      title: "Success",
-                      color: "success",
-                      iconType: "check",
-                      text: (
-                        <p>
-                          You have updated the book{" "}
-                          <strong>{editFlyoutState.title}</strong> successfully.
-                        </p>
-                      ),
-                    });
-                    setIsFlyoutVisible(false);
-                    setEditFlyoutState(null);
-                    setSelectedBook(null);
-                  } catch (error) {
-                    console.error("Update failed:", error);
-                  }
-                }}
-              />
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        }
-      />
-    );
-  }
+          </tbody>
+        </table>
+      }
+      footer={
+        <EuiFlexGroup justifyContent="spaceBetween">
+          <EuiFlexItem grow={false}>
+            <CommonEmptyButton
+              iconType="cross"
+              onClick={() => setIsFlyoutVisible(false)}
+              title="close"
+            />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <CommonButton title="Update" fill onClick={handleUpdateBook} />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      }
+    />
+  );
+}
   const handleAddBookDetail = async () => {
-    if (!addBookState) return;
+  const newErrors: typeof errors = {};
+  const { title, author, year, quantity, price } = addBookState || {};
 
-    try {
-      const payload = {
-        ...addBookState,
-        title: addBookState.title.trim(),
-        author: addBookState.author.trim(),
-        year: parseInt(addBookState.year.toString().trim(), 10),
-        quantity: parseInt(addBookState.quantity.toString().trim(), 10),
-        price: parseFloat(addBookState.price.toString().trim()),
-      };
+  if (!title?.trim()) newErrors.title = "Title is required.";
+  if (!author?.trim()) newErrors.author = "Author is required.";
 
-      await addData(payload).unwrap(); // send to backend
+  const parsedYear = parseInt(year?.toString().trim(), 10);
+  if (isNaN(parsedYear) || parsedYear <= 0)
+    newErrors.year = "Year must be a positive number.";
 
-      addToast({
-        title: "Success",
-        color: "success",
-        iconType: "check",
-        text: (
-          <p>
-            You have added the book <strong>{payload.title}</strong>{" "}
-            successfully.
-          </p>
-        ),
-      });
+  const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
+  if (isNaN(parsedQuantity) || parsedQuantity <= 0)
+    newErrors.quantity = "Quantity must be a positive number.";
 
-      // Reset the form and close flyout
-      setAddBookState({
-        title: "",
-        author: "",
-        year: "",
-        quantity: "",
-        price: "",
-      });
-      setIsAddFlyoutVisible(false);
-    } catch (error) {
-      console.error("Failed to add book:", error);
-    }
-  };
+  const parsedPrice = parseFloat(price?.toString().trim());
+  if (isNaN(parsedPrice) || parsedPrice <= 0)
+    newErrors.price = "Price must be a positive number.";
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setErrors({}); // clear previous errors
+
+  try {
+    const payload = {
+      title: title.trim(),
+      author: author.trim(),
+      year: parsedYear,
+      quantity: parsedQuantity,
+      price: parsedPrice,
+    };
+
+    await addData(payload).unwrap();
+
+    // ✅ Success Toast
+    addToast({
+      title: "Success",
+      color: "success",
+      iconType: "check",
+      text: (
+        <p>
+          You have added the book <strong>{payload.title}</strong> successfully.
+        </p>
+      ),
+    });
+
+    // Reset form and close flyout
+    setAddBookState({
+      title: "",
+      author: "",
+      year: "",
+      quantity: "",
+      price: "",
+    });
+
+    setIsAddFlyoutVisible(false);
+  } catch (error) {
+    console.error("Failed to add book:", error);
+
+    // Optional: error toast
+    addToast({
+      title: "Error",
+      color: "danger",
+      iconType: "alert",
+      text: <p>Something went wrong while adding the book. Please try again.</p>,
+    });
+  }
+};
+
+
   let addFlyout;
   if (isAddFlyoutVisible) {
     addFlyout = (
@@ -382,86 +492,115 @@ export const BooksDetails: React.FC = () => {
         body={
           <table>
             <tbody>
-            <tr>
-              <td className="table-title">
-                <EuiText>Title</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={addBookState?.title || ""}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAddBookState((prev) => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="table-title">
-                <EuiText>Author</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={addBookState?.author || ""}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAddBookState((prev) => ({
-                      ...prev,
-                      author: e.target.value,
-                    }))
-                  }
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="table-title">
-                <EuiText>Year</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={addBookState?.year?.toString() || ""}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAddBookState((prev) => ({
-                      ...prev,
-                      year: parseInt(e.target.value),
-                    }))
-                  }
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="table-title">
-                <EuiText>Quantity</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={addBookState?.quantity?.toString() || ""}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAddBookState((prev) => ({
-                      ...prev,
-                      quantity: parseInt(e.target.value),
-                    }))
-                  }
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="table-title">
-                <EuiText>Price</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={addBookState?.price?.toString() || ""}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAddBookState((prev) => ({
-                      ...prev,
-                      price: parseFloat(e.target.value),
-                    }))
-                  }
-                />
-              </td>
-            </tr>
+              <tr>
+                <td className="table-title">
+                  <EuiText>Title</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={addBookState?.title || ""}
+                    onChange={(e: { target: { value: string } }) =>
+                      setAddBookState((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors.title && (
+                    <EuiText color="danger" size="s">
+                      {errors.title}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
+
+              <tr>
+                <td className="table-title">
+                  <EuiText>Author</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={addBookState?.author || ""}
+                    onChange={(e: { target: { value: string } }) =>
+                      setAddBookState((prev) => ({
+                        ...prev,
+                        author: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors.author && (
+                    <EuiText color="danger" size="s">
+                      {errors.author}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
+
+              <tr>
+                <td className="table-title">
+                  <EuiText>Year</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={addBookState?.year?.toString() || ""}
+                    onChange={(e: { target: { value: string } }) =>
+                      setAddBookState((prev) => ({
+                        ...prev,
+                        year: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors.year && (
+                    <EuiText color="danger" size="s">
+                      {errors.year}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
+
+              <tr>
+                <td className="table-title">
+                  <EuiText>Quantity</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={addBookState?.quantity?.toString() || ""}
+                    onChange={(e: { target: { value: string } }) =>
+                      setAddBookState((prev) => ({
+                        ...prev,
+                        quantity: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors.quantity && (
+                    <EuiText color="danger" size="s">
+                      {errors.quantity}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
+
+              <tr>
+                <td className="table-title">
+                  <EuiText>Price</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={addBookState?.price?.toString() || ""}
+                    onChange={(e: { target: { value: string } }) =>
+                      setAddBookState((prev) => ({
+                        ...prev,
+                        price: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors.price && (
+                    <EuiText color="danger" size="s">
+                      {errors.price}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
             </tbody>
           </table>
         }

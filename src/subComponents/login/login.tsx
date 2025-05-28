@@ -4,17 +4,27 @@ import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldTex
 import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/commonFieldPassword";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
 import { useAddDataMutation } from "../../service/loginService/loginService";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export const Login: React.FC = () => {
   const [userLoginName, setUserLoginName] = useState("");
   const [userLoginPassword, setUserLoginPassword] = useState("");
+  const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [postLoginData] = useAddDataMutation();
 
   const navigate = useNavigate();
 
   const handlePostUserLoginData = async () => {
+    const newErrors: typeof errors = {};
+
+    if (!userLoginName.trim()) newErrors.username = "Username is required.";
+    if (!userLoginPassword.trim()) newErrors.password = "Password is required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       const userData = {
         username: userLoginName.trim(),
@@ -22,50 +32,34 @@ export const Login: React.FC = () => {
       };
 
       const response = await postLoginData(userData).unwrap();
+
       if (response.token) {
         localStorage.setItem("token", response.token);
-        console.log("Login successful, token stored!");
-      } else {
-        console.warn("No token received in response");
+        navigate("/booksdetail");
+        setUserLoginName("");
+        setUserLoginPassword("");
+        setErrors({});
       }
-
-      navigate("/booksdetail");
-      console.log("this is post data", response);
-
-      setUserLoginName("");
-      setUserLoginPassword("");
-    } catch (err) {
-      console.error("Error during signup:", err);
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setErrors({
+        username: "Invalid username or password",
+        password: "Invalid username or password",
+      });
     }
   };
-  const handleUserLoginNameChange = (e: {
-    preventDefault: () => void;
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    e.preventDefault();
-    setUserLoginName(e.target.value);
-  };
 
-  const handleUserLoginPasswordChange = (e: {
-    preventDefault: () => void;
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    e.preventDefault();
-    setUserLoginPassword(e.target.value);
-  };
   return (
     <div className="login-div">
-      <EuiFlexGroup
-        className="login-flex"
-        direction="column"
-        alignItems="center"
-      >
+      <EuiFlexGroup className="login-flex" direction="column" alignItems="center">
         <EuiFlexGroup className="login-subFlex" direction="column">
           <EuiFlexGroup justifyContent="center" alignItems="center">
             <EuiFlexItem className="login-text" grow={false}>
               <EuiText>LogIn</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
+
+          {/* Username Field */}
           <EuiFlexGroup alignItems="center">
             <EuiFlexItem className="username-text" grow={false}>
               <EuiText>UserName</EuiText>
@@ -74,15 +68,18 @@ export const Login: React.FC = () => {
               <CommonFieldText
                 value={userLoginName}
                 placeholder="Enter Username"
-                onChange={handleUserLoginNameChange}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setUserLoginName(e.target.value)}
               />
+              {errors.username && (
+                <EuiText color="danger" size="s">
+                  {errors.username}
+                </EuiText>
+              )}
             </EuiFlexItem>
           </EuiFlexGroup>
-          <EuiFlexGroup
-            className="login-password"
-            gutterSize="xl"
-            alignItems="center"
-          >
+
+          {/* Password Field */}
+          <EuiFlexGroup gutterSize="xl" alignItems="center" className="login-password">
             <EuiFlexItem className="password-text" grow={false}>
               <EuiText>Password</EuiText>
             </EuiFlexItem>
@@ -91,25 +88,28 @@ export const Login: React.FC = () => {
                 value={userLoginPassword}
                 type="dual"
                 placeholder="Password"
-                onChange={handleUserLoginPasswordChange}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setUserLoginPassword(e.target.value)}
               />
+              {errors.password && (
+                <EuiText color="danger" size="s">
+                  {errors.password}
+                </EuiText>
+              )}
             </EuiFlexItem>
           </EuiFlexGroup>
+
           <EuiFlexGroup justifyContent="center">
-                      <EuiFlexItem grow={false}>
-                        <EuiText className="login-link">
-                          <Link to="/signup">Register here to login</Link>
-                        </EuiText>
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
+            <EuiFlexItem grow={false}>
+              <EuiText className="login-link">
+                <Link to="/signup">Register here to login</Link>
+              </EuiText>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={false}>
               <div className="login-btn">
-                <CommonButton
-                  fill={true}
-                  title="Login"
-                  onClick={handlePostUserLoginData}
-                />
+                <CommonButton fill={true} title="Login" onClick={handlePostUserLoginData} />
               </div>
             </EuiFlexItem>
           </EuiFlexGroup>
