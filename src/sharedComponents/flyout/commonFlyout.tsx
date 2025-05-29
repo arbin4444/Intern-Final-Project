@@ -3,7 +3,6 @@ import {
   EuiFlyoutBody,
   EuiFlyoutFooter,
   EuiFlyoutHeader,
-  EuiTitle,
 } from "@elastic/eui";
 import React from "react";
 

@@ -5,7 +5,7 @@ export const signupService = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000",
   }),
-  tagTypes: ["Data"], //used to refetch data automatically
+  tagTypes: ["SignupData"], //used to refetch data automatically
   endpoints: (builder) => ({
     addData: builder.mutation({
       query: (data) => ({
@@ -13,7 +13,7 @@ export const signupService = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Data"], //for refetch data
+      invalidatesTags: ["SignupData"], //for refetch data
     }),
   }),
 });

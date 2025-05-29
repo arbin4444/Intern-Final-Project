@@ -4,7 +4,7 @@ import React from "react";
 interface CommonSearchFieldProps {
   placeholder?: string;
   value?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   isClearable?: boolean;
   fullWidth?: boolean;
 }

@@ -25,14 +25,26 @@ export const SignUp: React.FC = () => {
       newErrors.username = "Username is required.";
     }
 
-    if (!userSignupEmail.trim()) {
+    const email = userSignupEmail.trim();
+    const gmailRegex = /^[^\s@]+@gmail\.com$/;
+
+    if (!email) {
       newErrors.email = "Email is required.";
+    } else if (!gmailRegex.test(email)) {
+      newErrors.email =
+        "Email must be a valid Gmail address (e.g., example@gmail.com).";
     }
 
-    if (!userSignupPassword.trim()) {
+    const password = userSignupPassword.trim();
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!password) {
       newErrors.password = "Password is required.";
-    } else if (userSignupPassword.trim().length < 8) {
+    } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters.";
+    } else if (!specialCharRegex.test(password)) {
+      newErrors.password =
+        "Password must include at least one special character (!, @, #, etc.).";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -40,7 +52,7 @@ export const SignUp: React.FC = () => {
       return;
     }
 
-    setSignupErrors({}); 
+    setSignupErrors({});
 
     try {
       const userData = {

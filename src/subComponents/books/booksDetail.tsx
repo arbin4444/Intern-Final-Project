@@ -48,12 +48,12 @@ export const BooksDetails: React.FC = () => {
   }>({});
 
   const [editErrors, setEditErrors] = useState<{
-  title?: string;
-  author?: string;
-  year?: string;
-  quantity?: string;
-  price?: string;
-}>({});
+    title?: string;
+    author?: string;
+    year?: string;
+    quantity?: string;
+    price?: string;
+  }>({});
 
   const [searchBook, setSearchBook] = useState("");
   const {
@@ -177,7 +177,7 @@ export const BooksDetails: React.FC = () => {
     try {
       await buyBook({
         items: [{ bookId: bookToBuy.id, quantity: 1 }],
-      }).unwrap(); 
+      }).unwrap();
 
       addToast({
         title: "Success",
@@ -201,284 +201,316 @@ export const BooksDetails: React.FC = () => {
   if (isError) return <p>Error has occurred</p>;
   if (isLoading) return <p>Still Loading, please wait for results...</p>;
 
-
   const handleUpdateBook = async () => {
-  if (!editFlyoutState) return;
+    if (!editFlyoutState) return;
 
-  const { title, author, year, quantity, price } = editFlyoutState;
-  const newErrors: typeof editErrors = {};
+    const { title, author, year, quantity, price } = editFlyoutState;
+    const newErrors: typeof editErrors = {};
 
-  if (!title?.trim()) newErrors.title = "Title is required.";
-  if (!author?.trim()) newErrors.author = "Author is required.";
+    const specialCharPattern = /[^a-zA-Z0-9\s'-]/;
 
-  const parsedYear = parseInt(year?.toString().trim(), 10);
-  if (isNaN(parsedYear) || parsedYear <= 0)
-    newErrors.year = "Year must be a positive number.";
+    if (!title?.trim()) {
+      newErrors.title = "Title is required.";
+    } else if (specialCharPattern.test(title.trim())) {
+      newErrors.title = "Title must not contain special characters.";
+    }
+    if (!author?.trim()) {
+      newErrors.author = "Author is required.";
+    } else if (specialCharPattern.test(author.trim())) {
+      newErrors.author = "Author must not contain special characters.";
+    }
 
-  const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
-  if (isNaN(parsedQuantity) || parsedQuantity <= 0)
-    newErrors.quantity = "Quantity must be a positive number.";
+    const parsedYear = parseInt(year?.toString().trim(), 10);
+    if (isNaN(parsedYear) || parsedYear <= 0)
+      newErrors.year = "Year must be a positive number.";
 
-  const parsedPrice = parseFloat(price?.toString().trim());
-  if (isNaN(parsedPrice) || parsedPrice <= 0)
-    newErrors.price = "Price must be a positive number.";
+    const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0)
+      newErrors.quantity = "Quantity must be a positive number.";
 
-  if (Object.keys(newErrors).length > 0) {
-    setEditErrors(newErrors);
-    return;
-  }
+    const parsedPrice = parseFloat(price?.toString().trim());
+    if (isNaN(parsedPrice) || parsedPrice <= 0)
+      newErrors.price = "Price must be a positive number.";
 
-  setEditErrors({}); 
+    if (Object.keys(newErrors).length > 0) {
+      setEditErrors(newErrors);
+      return;
+    }
 
-  try {
-    const payload = {
-      ...editFlyoutState,
-      title: title.trim(),
-      author: author.trim(),
-      year: parsedYear,
-      quantity: parsedQuantity,
-      price: parsedPrice,
-    };
+    setEditErrors({});
 
-    await updateData(payload).unwrap();
+    try {
+      const payload = {
+        ...editFlyoutState,
+        title: title.trim(),
+        author: author.trim(),
+        year: parsedYear,
+        quantity: parsedQuantity,
+        price: parsedPrice,
+      };
 
-    addToast({
-      title: "Success",
-      color: "success",
-      iconType: "check",
-      text: (
-        <p>
-          You have updated the book <strong>{payload.title}</strong> successfully.
-        </p>
-      ),
-    });
+      await updateData(payload).unwrap();
 
-    setIsFlyoutVisible(false);
-    setEditFlyoutState(null);
-    setSelectedBook(null);
-  } catch (error) {
-    console.error("Update failed:", error);
-  }
-};
+      addToast({
+        title: "Success",
+        color: "success",
+        iconType: "check",
+        text: (
+          <p>
+            You have updated the book <strong>{payload.title}</strong>{" "}
+            successfully.
+          </p>
+        ),
+      });
+
+      setIsFlyoutVisible(false);
+      setEditFlyoutState(null);
+      setSelectedBook(null);
+    } catch (error) {
+      console.error("Update failed:", error);
+    }
+  };
   let flyout;
-if (isFlyoutVisible) {
-  flyout = (
-    <CommonFlyout
-      ownFocus={true}
-      hasBorder={true}
-      size="s"
-      onClose={() => {
-        setIsFlyoutVisible(false);
-        setSelectedBook(null);
-      }}
-      header={
-        <EuiTitle>
-          <h2>Update Book Details</h2>
-        </EuiTitle>
-      }
-      body={
-        <table>
-          <tbody>
-            <tr>
-              <td className="table-title">
-                <EuiText>Title</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={editFlyoutState?.title || ""}
-                  onChange={(e: { target: { value: any; }; }) =>
-                    setEditFlyoutState((prev) =>
-                      prev ? { ...prev, title: e.target.value } : null
-                    )
-                  }
-                />
-                {editErrors.title && (
-                  <EuiText color="danger" size="s">
-                    {editErrors.title}
-                  </EuiText>
-                )}
-              </td>
-            </tr>
+  if (isFlyoutVisible) {
+    flyout = (
+      <CommonFlyout
+        ownFocus={true}
+        hasBorder={true}
+        size="s"
+        onClose={() => {
+          setIsFlyoutVisible(false);
+          setSelectedBook(null);
+        }}
+        header={
+          <EuiTitle>
+            <h2>Update Book Details</h2>
+          </EuiTitle>
+        }
+        body={
+          <table>
+            <tbody>
+              <tr>
+                <td className="table-title">
+                  <EuiText>Title</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={editFlyoutState?.title || ""}
+                    onChange={(e: { target: { value: any } }) =>
+                      setEditFlyoutState((prev) =>
+                        prev ? { ...prev, title: e.target.value } : null
+                      )
+                    }
+                  />
+                  {editErrors.title && (
+                    <EuiText color="danger" size="s">
+                      {editErrors.title}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
 
-            <tr>
-              <td className="table-title">
-                <EuiText>Author</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={editFlyoutState?.author || ""}
-                  onChange={(e: { target: { value: any; }; }) =>
-                    setEditFlyoutState((prev) =>
-                      prev ? { ...prev, author: e.target.value } : null
-                    )
-                  }
-                />
-                {editErrors.author && (
-                  <EuiText color="danger" size="s">
-                    {editErrors.author}
-                  </EuiText>
-                )}
-              </td>
-            </tr>
+              <tr>
+                <td className="table-title">
+                  <EuiText>Author</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={editFlyoutState?.author || ""}
+                    onChange={(e: { target: { value: any } }) =>
+                      setEditFlyoutState((prev) =>
+                        prev ? { ...prev, author: e.target.value } : null
+                      )
+                    }
+                  />
+                  {editErrors.author && (
+                    <EuiText color="danger" size="s">
+                      {editErrors.author}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
 
-            <tr>
-              <td className="table-title">
-                <EuiText>Year</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={editFlyoutState?.year?.toString() || ""}
-                  onChange={(e: { target: { value: any; }; }) =>
-                    setEditFlyoutState((prev) =>
-                      prev ? { ...prev, year: e.target.value } : null
-                    )
-                  }
-                />
-                {editErrors.year && (
-                  <EuiText color="danger" size="s">
-                    {editErrors.year}
-                  </EuiText>
-                )}
-              </td>
-            </tr>
+              <tr>
+                <td className="table-title">
+                  <EuiText>Year</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={editFlyoutState?.year?.toString() || ""}
+                    onChange={(e: { target: { value: any } }) =>
+                      setEditFlyoutState((prev) =>
+                        prev ? { ...prev, year: e.target.value } : null
+                      )
+                    }
+                  />
+                  {editErrors.year && (
+                    <EuiText color="danger" size="s">
+                      {editErrors.year}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
 
-            <tr>
-              <td className="table-title">
-                <EuiText>Quantity</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={editFlyoutState?.quantity?.toString() || ""}
-                  onChange={(e: { target: { value: any; }; }) =>
-                    setEditFlyoutState((prev) =>
-                      prev ? { ...prev, quantity: e.target.value } : null
-                    )
-                  }
-                />
-                {editErrors.quantity && (
-                  <EuiText color="danger" size="s">
-                    {editErrors.quantity}
-                  </EuiText>
-                )}
-              </td>
-            </tr>
+              <tr>
+                <td className="table-title">
+                  <EuiText>Quantity</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={editFlyoutState?.quantity?.toString() || ""}
+                    onChange={(e: { target: { value: any } }) =>
+                      setEditFlyoutState((prev) =>
+                        prev ? { ...prev, quantity: e.target.value } : null
+                      )
+                    }
+                  />
+                  {editErrors.quantity && (
+                    <EuiText color="danger" size="s">
+                      {editErrors.quantity}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
 
-            <tr>
-              <td className="table-title">
-                <EuiText>Price</EuiText>
-              </td>
-              <td className="table-field">
-                <CommonFieldText
-                  value={editFlyoutState?.price?.toString() || ""}
-                  onChange={(e: { target: { value: any; }; }) =>
-                    setEditFlyoutState((prev) =>
-                      prev ? { ...prev, price: e.target.value } : null
-                    )
-                  }
-                />
-                {editErrors.price && (
-                  <EuiText color="danger" size="s">
-                    {editErrors.price}
-                  </EuiText>
-                )}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      }
-      footer={
-        <EuiFlexGroup justifyContent="spaceBetween">
-          <EuiFlexItem grow={false}>
-            <CommonEmptyButton
-              iconType="cross"
-              onClick={() => setIsFlyoutVisible(false)}
-              title="close"
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <CommonButton title="Update" fill onClick={handleUpdateBook} />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      }
-    />
-  );
-}
+              <tr>
+                <td className="table-title">
+                  <EuiText>Price</EuiText>
+                </td>
+                <td className="table-field">
+                  <CommonFieldText
+                    value={editFlyoutState?.price?.toString() || ""}
+                    onChange={(e: { target: { value: any } }) =>
+                      setEditFlyoutState((prev) =>
+                        prev ? { ...prev, price: e.target.value } : null
+                      )
+                    }
+                  />
+                  {editErrors.price && (
+                    <EuiText color="danger" size="s">
+                      {editErrors.price}
+                    </EuiText>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        }
+        footer={
+          <EuiFlexGroup justifyContent="spaceBetween">
+            <EuiFlexItem grow={false}>
+              <CommonEmptyButton
+                iconType="cross"
+                onClick={() => setIsFlyoutVisible(false)}
+                title="close"
+              />
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <CommonButton title="Update" fill onClick={handleUpdateBook} />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        }
+      />
+    );
+  }
   const handleAddBookDetail = async () => {
-  const newErrors: typeof errors = {};
-  const { title, author, year, quantity, price } = addBookState || {};
+    const newErrors: typeof errors = {};
+    const { title, author, year, quantity, price } = addBookState || {};
 
-  if (!title?.trim()) newErrors.title = "Title is required.";
-  if (!author?.trim()) newErrors.author = "Author is required.";
+    const specialCharPattern = /[^a-zA-Z0-9\s'-]/;
 
-  const parsedYear = parseInt(year?.toString().trim(), 10);
-  if (isNaN(parsedYear) || parsedYear <= 0)
-    newErrors.year = "Year must be a positive number.";
+    if (!title?.trim()) {
+      newErrors.title = "Title is required.";
+    } else if (specialCharPattern.test(title.trim())) {
+      newErrors.title = "Title must not contain special characters.";
+    }
+    if (!author?.trim()) {
+      newErrors.author = "Author is required.";
+    } else if (specialCharPattern.test(author.trim())) {
+      newErrors.author = "Author must not contain special characters.";
+    }
 
-  const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
-  if (isNaN(parsedQuantity) || parsedQuantity <= 0)
-    newErrors.quantity = "Quantity must be a positive number.";
+    const parsedYear = parseInt(year?.toString().trim(), 10);
+    if (isNaN(parsedYear) || parsedYear <= 0)
+      newErrors.year = "Year must be a positive number.";
 
-  const parsedPrice = parseFloat(price?.toString().trim());
-  if (isNaN(parsedPrice) || parsedPrice <= 0)
-    newErrors.price = "Price must be a positive number.";
+    const parsedQuantity = parseInt(quantity?.toString().trim(), 10);
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0)
+      newErrors.quantity = "Quantity must be a positive number.";
 
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
+    const parsedPrice = parseFloat(price?.toString().trim());
+    if (isNaN(parsedPrice) || parsedPrice <= 0)
+      newErrors.price = "Price must be a positive number.";
 
-  setErrors({}); 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
-  try {
-    const payload = {
-      title: title.trim(),
-      author: author.trim(),
-      year: parsedYear,
-      quantity: parsedQuantity,
-      price: parsedPrice,
-    };
+    setErrors({});
 
-    await addData(payload).unwrap();
- 
-    addToast({
-      title: "Success",
-      color: "success",
-      iconType: "check",
-      text: (
-        <p>
-          You have added the book <strong>{payload.title}</strong> successfully.
-        </p>
-      ),
-    });
+    try {
+      const payload = {
+        title: title.trim(),
+        author: author.trim(),
+        year: parsedYear,
+        quantity: parsedQuantity,
+        price: parsedPrice,
+      };
 
-    setAddBookState({
-      title: "",
-      author: "",
-      year: "",
-      quantity: "",
-      price: "",
-    });
+      await addData(payload).unwrap();
 
-    setIsAddFlyoutVisible(false);
-  } catch (error) {
-    console.error("Failed to add book:", error);
+      addToast({
+        title: "Success",
+        color: "success",
+        iconType: "check",
+        text: (
+          <p>
+            You have added the book <strong>{payload.title}</strong>{" "}
+            successfully.
+          </p>
+        ),
+      });
 
-    addToast({
-      title: "Error",
-      color: "danger",
-      iconType: "alert",
-      text: <p>Something went wrong while adding the book. Please try again.</p>,
-    });
-  }
-};
+      setAddBookState({
+        title: "",
+        author: "",
+        year: "",
+        quantity: "",
+        price: "",
+      });
 
+      setIsAddFlyoutVisible(false);
+    } catch (error) {
+      console.error("Failed to add book:", error);
+
+      addToast({
+        title: "Error",
+        color: "danger",
+        iconType: "alert",
+        text: (
+          <p>Something went wrong while adding the book. Please try again.</p>
+        ),
+      });
+    }
+  };
 
   let addFlyout;
   if (isAddFlyoutVisible) {
     addFlyout = (
       <CommonFlyout
         ownFocus={true}
-        onClose={() => setIsAddFlyoutVisible(false)}
+        onClose={() => {
+          setIsAddFlyoutVisible(false);
+          setAddBookState({
+            title: "",
+            author: "",
+            year: "",
+            quantity: "",
+            price: "",
+          });
+          setErrors({}); 
+        }}
         size="s"
         hasBorder={true}
         header={
@@ -606,7 +638,17 @@ if (isFlyoutVisible) {
             <EuiFlexItem grow={false}>
               <CommonEmptyButton
                 iconType="cross"
-                onClick={() => setIsAddFlyoutVisible(false)}
+                onClick={() => {
+                  setIsAddFlyoutVisible(false);
+                  setAddBookState({
+                    title: "",
+                    author: "",
+                    year: "",
+                    quantity: "",
+                    price: "",
+                  });
+                  setErrors({});
+                }}
                 title="close"
               />
             </EuiFlexItem>
@@ -696,7 +738,7 @@ if (isFlyoutVisible) {
                 <CommonEmptyButton
                   iconType="check"
                   onClick={() => {
-                    setBookToBuy(item); 
+                    setBookToBuy(item);
                     setIsBuyModalVisible(true);
                     closePopover();
                   }}

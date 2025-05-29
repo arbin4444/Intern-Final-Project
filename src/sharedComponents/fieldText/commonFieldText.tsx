@@ -4,7 +4,7 @@ import React from "react";
 interface CommonFieldTextProps {
   value?: any;
   placeholder?: string;
-  onChange?: any;
+  onChange: any;
 }
 
 export const CommonFieldText: React.FC<CommonFieldTextProps> = ({

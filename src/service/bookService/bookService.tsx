@@ -12,12 +12,12 @@ export const booksApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Data"], //used to refetch data automatically
+  tagTypes: ["bookData"], //used to refetch data automatically
   endpoints: (builder) => ({
     getData: builder.query<BookTypes[], void>({
       query: () => "/books",
       //   transformResponse: (data:BookTypes[])=>data.reverse(),
-      providesTags: ["Data"], //for refetch data
+      providesTags: ["bookData"], //for refetch data
     }),
     addData: builder.mutation({
       query: (data) => ({
@@ -25,7 +25,7 @@ export const booksApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Data"], //for refetch data
+      invalidatesTags: ["bookData"], //for refetch data
     }),
     updateData: builder.mutation({
       query: ({ id, ...updatedData }) => ({
@@ -33,14 +33,14 @@ export const booksApi = createApi({
         method: "PUT",
         body: updatedData,
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ["bookData"],
     }),
     deleteData: builder.mutation({
       query: (id) => ({
         url: `/books/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Data"],
+      invalidatesTags: ["bookData"],
     }),
     searchData: builder.query<BookTypes[], string>({
       query: (searchTerm) => `/search?query=${encodeURIComponent(searchTerm)}`,
@@ -53,7 +53,7 @@ export const booksApi = createApi({
         method: "POST",
         body: purchaseData,
       }),
-      invalidatesTags: ["Data"], // Refresh book list to update quantity
+      invalidatesTags: ["bookData"], // Refresh book list to update quantity
     }),
   }),
 });

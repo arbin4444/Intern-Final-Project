@@ -13,7 +13,7 @@ interface CommonEmptyButtonProps {
     | "danger"
     | "neutral"
     | "risk";
-  onClick?: any;
+  onClick: any;
   title?: string;
 }
 

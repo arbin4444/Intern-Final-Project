@@ -5,7 +5,7 @@ interface CommonFieldPassword {
   placeholder?: string;
   type?: "text" | "password" | "dual";
   value?: string | number;
-  onChange?: any;
+  onChange: any;
 }
 
 export const CommonFieldPassword: React.FC<CommonFieldPassword> = ({

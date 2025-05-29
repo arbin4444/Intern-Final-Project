@@ -4,11 +4,11 @@ import React from "react";
 interface CommonTableProps {
   tableCaption?: string;
   responsiveBreakpoint?: boolean;
-  items?: any;
+  items: any;
   rowHeader?: string;
-  columns?: any;
+  columns: any;
   pagination?: Pagination;
-  onChange?: any;
+  onChange: any;
 }
 
 export const CommonTable: React.FC<CommonTableProps> = ({

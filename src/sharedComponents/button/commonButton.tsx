@@ -12,8 +12,8 @@ interface CommonButtonProps {
     | "danger"
     | "neutral"
     | "risk";
-  onClick?: any;
-  title?: string;
+  onClick: any;
+  title: string;
   fill?: boolean;
 }
 

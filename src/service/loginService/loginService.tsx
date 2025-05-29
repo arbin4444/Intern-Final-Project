@@ -4,7 +4,7 @@ export const loginService = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000",
   }),
-  tagTypes: ["Data"], //used to refetch data automatically
+  tagTypes: ["LoginData"], //used to refetch data automatically
   endpoints: (builder) => ({
     addData: builder.mutation({
       query: (data) => ({
@@ -12,7 +12,7 @@ export const loginService = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Data"], //for refetch data
+      invalidatesTags: ["LoginData"], //for refetch data
     }),
   }),
 });
