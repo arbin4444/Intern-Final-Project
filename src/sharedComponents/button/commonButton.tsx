@@ -12,7 +12,7 @@ interface CommonButtonProps {
     | "danger"
     | "neutral"
     | "risk";
-  onClick: any;
+  onClick?: any;
   title: string;
   fill?: boolean;
 }
@@ -24,10 +24,10 @@ export const CommonButton: React.FC<CommonButtonProps> = ({
   fill,
 }) => {
   return (
-    <>
+    <div className="common-btn">
       <EuiButton color={color} onClick={onClick} fill={fill}>
         {title}
       </EuiButton>
-    </>
+    </div>
   );
 };

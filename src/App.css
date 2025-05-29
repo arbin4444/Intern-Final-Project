@@ -146,11 +146,16 @@ margin: 10px;
   font-weight: 400;
   font-size: 20px;
 }
-.cart-bookDetail .css-1n6n1v5-euiText-m{
+.cart-bookDetail .css-1n6n1v5-euiText-m {
   font-weight: 500;
   font-size: 25px;
 }
-
+.common-btn {
+  margin: 5px 0px;
+}
+.tableBook-detail {
+  width: 40%;
+}
 @media screen and (max-width: 767px) {
   .email-fieldText.css-9sbomz-euiFlexItem-grow-1 {
     margin: 0 0 0 0;
@@ -211,23 +216,21 @@ margin: 10px;
     font-size: 18px;
   }
 }
-.table-title{
-  width:34%!important;
- 
+.table-title {
+  width: 34% !important;
 }
-.table-field{
-  width:66%!important;
-  
+.table-field {
+  width: 66% !important;
 }
-.common-fieldText .css-k0u44b-euiFormControlLayout{
+.common-fieldText .css-k0u44b-euiFormControlLayout {
   margin: 6px 0px 6px 0px;
 }
-.table-group .css-ykrjwq-euiTableCellContent-euiTableHeaderCell__content{
-font-size: 16px;
-padding: 3px;
-height: 27px;
+.table-group .css-ykrjwq-euiTableCellContent-euiTableHeaderCell__content {
+  font-size: 16px;
+  padding: 3px;
+  height: 27px;
 }
-.table-group .css-3uekwx-euiTableRowCell__mobileHeader{
-font-size: 14px;
-padding: 3px;
+.table-group .css-3uekwx-euiTableRowCell__mobileHeader {
+  font-size: 14px;
+  padding: 3px;
 }
