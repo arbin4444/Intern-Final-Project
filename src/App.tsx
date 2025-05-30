@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SignUp } from "./subComponents/signUp/signUp";
 import {BooksDetails} from "./subComponents/books/booksDetail"
 import {ProtectedRoute} from "./subComponents/route/protectedRoute"
+import { CartDetails } from "./subComponents/cart/cartDetails";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/" element={<Login />} />
+            <Route path="/cart" element={<CartDetails/>}/>
             <Route path="/booksdetail" element={
               <ProtectedRoute>
 
