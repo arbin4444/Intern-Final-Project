@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetDataQuery } from "../../service/bookService/bookService";
-import { useUpdateDataMutation } from "../../service/bookService/bookService";
-import { useDeleteDataMutation } from "../../service/bookService/bookService";
-import { useAddDataMutation } from "../../service/bookService/bookService";
-import { useSearchDataQuery } from "../../service/bookService/bookService";
-import { useBuyBooksMutation } from "../../service/bookService/bookService";
+import { useGetDataQuery } from "../../Redux/service/bookService/bookService";
+import { useUpdateDataMutation } from "../../Redux/service/bookService/bookService";
+import { useDeleteDataMutation } from "../../Redux/service/bookService/bookService";
+import { useAddDataMutation } from "../../Redux/service/bookService/bookService";
+import { useSearchDataQuery } from "../../Redux/service/bookService/bookService";
+import { useBuyBooksMutation } from "../../Redux/service/bookService/bookService";
 import { BookTypes } from "../../types/books/bookTypes";
 import {
   Criteria,
@@ -25,9 +25,9 @@ import { CommonFlyout } from "../../sharedComponents/flyout/commonFlyout";
 import { CommonModal } from "../../sharedComponents/modal/commonModal";
 import { CommonTable } from "../../sharedComponents/table/commonTable";
 import { CommonToast } from "../../sharedComponents/toast/commonToast";
-import { addToCart } from "../../slices/cart/cartSlices";
-import { removeFromCart } from "../../slices/cart/cartSlices";
-import { RootState } from "../../store";
+import { addToCart } from "../../Redux/slices/cart/cartSlices";
+import { removeFromCart } from "../../Redux/slices/cart/cartSlices";
+import { RootState } from "../../Redux/store";
 
 export const BooksDetails: React.FC = () => {
   const { data, isError, isLoading } = useGetDataQuery();

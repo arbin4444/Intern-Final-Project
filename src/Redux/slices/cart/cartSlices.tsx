@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BookTypes } from "../../types/books/bookTypes";
+import { BookTypes } from "../../../types/books/bookTypes";
 
 interface Cart extends BookTypes {
   quantity: number;

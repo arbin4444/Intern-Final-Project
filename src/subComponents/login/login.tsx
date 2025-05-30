@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { CommonFieldText } from "../../sharedComponents/fieldText/commonFieldText";
 import { CommonFieldPassword } from "../../sharedComponents/fieldPassword/commonFieldPassword";
 import { CommonButton } from "../../sharedComponents/button/commonButton";
-import { useAddDataMutation } from "../../service/loginService/loginService";
+import { useAddDataMutation } from "../../Redux/service/loginService/loginService";
 import { useNavigate, Link } from "react-router-dom";
 
 export const Login: React.FC = () => {
