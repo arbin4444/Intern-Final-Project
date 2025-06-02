@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetDataQuery } from "../../Redux/service/bookService/bookService";
 import { useUpdateDataMutation } from "../../Redux/service/bookService/bookService";
@@ -10,9 +11,11 @@ import { BookTypes } from "../../types/books/bookTypes";
 import {
   Criteria,
   EuiBasicTableColumn,
+  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiIcon,
+  EuiPageHeader,
   EuiPopover,
   EuiText,
   EuiTitle,
@@ -26,7 +29,6 @@ import { CommonModal } from "../../sharedComponents/modal/commonModal";
 import { CommonTable } from "../../sharedComponents/table/commonTable";
 import { CommonToast } from "../../sharedComponents/toast/commonToast";
 import { addToCart } from "../../Redux/slices/cart/cartSlices";
-import { removeFromCart } from "../../Redux/slices/cart/cartSlices";
 import { RootState } from "../../Redux/store";
 
 export const BooksDetails: React.FC = () => {
@@ -38,7 +40,8 @@ export const BooksDetails: React.FC = () => {
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState<{
     title?: string;
@@ -85,6 +88,10 @@ export const BooksDetails: React.FC = () => {
       toastLifeTimeMs?: number;
     }>
   >([]);
+   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+   const onMenuButtonClick=()=>{
+    setIsPopoverOpen((isPopoverOpen)=>!isPopoverOpen);
+   }
 
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
 
@@ -794,8 +801,11 @@ export const BooksDetails: React.FC = () => {
 
   return (
     <div className="booksDetail-main">
+      
       <EuiFlexGroup direction="column">
-        <EuiText>Books Details Application</EuiText>
+        <EuiPageHeader pageTitle="Books Details Application" tabs={[{label:"Book Details",onClick: (e: { preventDefault: () => void; }) =>{e.preventDefault(); navigate('/booksdetail')}, isSelected:true},{label:"View Cart", onClick: (e: { preventDefault: () => void; }) =>{e.preventDefault(); navigate('/cart')}}]} bottomBorder="extended" 
+            rightSideItems={[<EuiPopover button={<EuiButtonIcon color="text" iconType="menu" onClick={onMenuButtonClick}></EuiButtonIcon>} isOpen={isPopoverOpen} closePopover={()=>setIsPopoverOpen(false)}><CommonEmptyButton title="Log Out" onClick={(e: { preventDefault: () => void; })=>{e.preventDefault();navigate('/');}}/></EuiPopover>]}>
+      </EuiPageHeader>
         <EuiFlexGroup className="searchField-group">
           <EuiFlexItem>
             <CommonSearchField
@@ -836,44 +846,6 @@ export const BooksDetails: React.FC = () => {
             onChange={onTableChange}
           />
         </EuiFlexGroup>
-        <EuiFlexGroup className="cart-bookNumber">
-          <EuiFlexItem grow={false}>
-            <EuiText>
-              No. of Books added to your Cart: <strong>{totalQuantity}</strong>
-            </EuiText>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        {cartItems.length > 0 && (
-          <>
-            <EuiText>
-              <h3>Books in Your Cart:</h3>
-            </EuiText>
-            <table className="cart-table">
-              <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id}>
-                    <td className="tableBook-detail">
-                      <EuiText size="s">
-                        <p>
-                          <strong>{item.title}</strong> by {item.author}
-                          Quantity: {item.quantity}, Price: {item.price}
-                        </p>
-                      </EuiText>
-                    </td>
-                    <td>
-                      <CommonButton
-                        title="remove"
-                        fill={true}
-                        color="danger"
-                        onClick={() => dispatch(removeFromCart(item.id))}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
       </EuiFlexGroup>
 
       {flyout}

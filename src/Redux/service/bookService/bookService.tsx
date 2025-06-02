@@ -55,6 +55,9 @@ export const booksApi = createApi({
       }),
       invalidatesTags: ["bookData"], // Refresh book list to update quantity
     }),
+    booksDetailById: builder.query({
+      query:(id)=>`/books/${id}`
+    })
   }),
 });
 
