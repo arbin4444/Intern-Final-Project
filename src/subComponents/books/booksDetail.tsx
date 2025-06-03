@@ -799,6 +799,18 @@ export const BooksDetails: React.FC = () => {
     },
   ];
 
+  const handleRowClick=(item:BookTypes)=>{
+    navigate(`/book/${item.id}`);
+  }
+
+  const getRowProps=(item:BookTypes)=>{
+    return{
+      onClick:()=>handleRowClick(item),
+      style : {cursor:'pointer'},
+
+    };
+  }
+
   return (
     <div className="booksDetail-main">
       
@@ -844,6 +856,7 @@ export const BooksDetails: React.FC = () => {
             columns={columns}
             pagination={pagination}
             onChange={onTableChange}
+            rowProps={getRowProps}
           />
         </EuiFlexGroup>
       </EuiFlexGroup>

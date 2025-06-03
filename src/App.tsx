@@ -8,6 +8,7 @@ import { SignUp } from "./subComponents/signUp/signUp";
 import {BooksDetails} from "./subComponents/books/booksDetail"
 import {ProtectedRoute} from "./subComponents/route/protectedRoute"
 import { CartDetails } from "./subComponents/cart/cartDetails";
+import {SingleBook} from "./subComponents/books/singleBook";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/" element={<Login />} />
             <Route path="/cart" element={<CartDetails/>}/>
+            <Route path="/book/:id" element={<SingleBook/>}></Route>
             <Route path="/booksdetail" element={
               <ProtectedRoute>
 

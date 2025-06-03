@@ -237,3 +237,18 @@ margin: 10px;
 .cartDetail-grp.css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column{
  margin : 60px 140px 0px 140px;
 }
+.singlePage-mainDiv{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.singlePage-group .css-kpsrin-euiFlexItem-growZero{
+  border-radius: 8px !important;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5) !important;
+  border-color: transparent !important;
+  padding: 8px;
+}
+.singleBook-title.css-1n6n1v5-euiText-m{
+  font-size: 20px;
+  font-weight: 600;
+}
