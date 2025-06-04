@@ -239,16 +239,22 @@ margin: 10px;
 }
 .singlePage-mainDiv{
   height: 100vh;
-  display: flex;
-  align-items: center;
+  background-color: rgb(230 252 252);
 }
-.singlePage-group .css-kpsrin-euiFlexItem-growZero{
-  border-radius: 8px !important;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5) !important;
-  border-color: transparent !important;
-  padding: 8px;
+.singlePage-detailGroup.css-kz3qdw-euiFlexGroup-l-flexStart-stretch-column{
+  margin : 60px 65px 0px 65px; 
+
 }
 .singleBook-title.css-1n6n1v5-euiText-m{
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
+  margin : 34px 0px 0px 0px;
+}
+.content-group .css-19ubjn6-euiFlexGroup-l-flexStart-center-column{
+   
+   background-color: #dcfaf9;
+   border-radius:40px ;
+}
+.singleBook-detail.css-1n6n1v5-euiText-m{
+  margin: 0 0 34px 0;
 }

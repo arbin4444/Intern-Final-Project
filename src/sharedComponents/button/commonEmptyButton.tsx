@@ -3,6 +3,8 @@ import React from "react";
 
 interface CommonEmptyButtonProps {
   iconType?: IconType;
+  type ? : "button" | "reset" | "submit";
+  flush ? : "left" | "right" | "both";
   color?:
     | "primary"
     | "text"
@@ -19,15 +21,17 @@ interface CommonEmptyButtonProps {
 
 export const CommonEmptyButton: React.FC<CommonEmptyButtonProps> = ({
   iconType,
+  type,
+  flush,
   color,
   onClick,
   title,
 }) => {
   return (
-    <>
-      <EuiButtonEmpty iconType={iconType} color={color} onClick={onClick}>
+    <div className="empty-btn">
+      <EuiButtonEmpty iconType={iconType} type={type} flush={flush} color={color} onClick={onClick}>
         {title}
       </EuiButtonEmpty>
-    </>
+    </div>
   );
 };

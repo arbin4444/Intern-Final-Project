@@ -700,9 +700,11 @@ export const BooksDetails: React.FC = () => {
     },
     {
       name: "Action",
+      
       render: (item: BookTypes) => {
         const isOpen = openPopoverId === item.id;
-        const onButtonClick = () => {
+        const onButtonClick = (e:React.MouseEvent) => {
+          e.stopPropagation();
           setOpenPopoverId(isOpen ? null : item.id);
         };
         const closePopover = () => setOpenPopoverId(null);
@@ -712,6 +714,7 @@ export const BooksDetails: React.FC = () => {
         );
 
         return (
+          <div onClick={(e:React.MouseEvent)=> e.stopPropagation()} style={{ width: '100%', height: '100%' }}>
           <EuiPopover
             button={button}
             isOpen={isOpen}
@@ -721,7 +724,8 @@ export const BooksDetails: React.FC = () => {
               <EuiFlexItem>
                 <CommonEmptyButton
                   iconType="pencil"
-                  onClick={() => {
+                  onClick={(e:React.MouseEvent) => {
+                    e.stopPropagation();
                     setSelectedBook(item);
                     setEditFlyoutState(item);
                     setIsFlyoutVisible(true);
@@ -734,7 +738,8 @@ export const BooksDetails: React.FC = () => {
                 <CommonEmptyButton
                   iconType="trash"
                   color="danger"
-                  onClick={() => {
+                  onClick={(e:React.MouseEvent) => {
+                    e.stopPropagation();
                     setBookToDelete(item);
                     showModal();
                     closePopover();
@@ -745,7 +750,8 @@ export const BooksDetails: React.FC = () => {
               <EuiFlexItem>
                 <CommonEmptyButton
                   iconType="check"
-                  onClick={() => {
+                  onClick={(e:React.MouseEvent) => {
+                    e.stopPropagation();
                     setBookToBuy(item);
                     setIsBuyModalVisible(true);
                     closePopover();
@@ -756,7 +762,8 @@ export const BooksDetails: React.FC = () => {
               <EuiFlexItem>
                 <CommonEmptyButton
                   iconType="plusInCircle"
-                  onClick={() => {
+                  onClick={(e:React.MouseEvent) => {
+                    e.stopPropagation();
                     const isBookInCart = cartItems.some(
                       (cartItem) => cartItem.id === item.id
                     );
@@ -794,8 +801,11 @@ export const BooksDetails: React.FC = () => {
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPopover>
+          </div>
         );
+        
       },
+      
     },
   ];
 
